@@ -1,15 +1,16 @@
 #pragma once
-#include "Entity.h"
+#include "../Entity.h"
 
-class WalkerEntity : public Entity {
+class TurretEntity : public Entity {
 private:
-	enum AIState { WALK_LEFT, WALK_RIGHT };
-	AIState m_ai_state;
-	glm::vec3 m_edge_check_offset;
-	glm::vec3 m_wall_check_offset;
+	enum AIState { IDLE, TRACKING };
+	AIState m_ai_state = IDLE;
+	SlimeEntity* m_target = nullptr;
+	float m_shot_cooldown = 0.0f;
+	float m_range;
 public:
-	WalkerEntity(Scene* scene, int dir);
-	~WalkerEntity();
+	TurretEntity(Scene* scene);
+	~TurretEntity();
 
 	// ————— CUSTOM UPDATE METHOD ————— //
 	void update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map) override;

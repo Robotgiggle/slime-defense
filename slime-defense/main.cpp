@@ -14,10 +14,6 @@
 #include "Utility.h"
 #include "Scene.h"
 #include "Level1.h"
-//#include "Entity.h"
-//#include "WalkerEntity.h"
-//#include "Map.h"
-
 
 // ————— CONSTANTS ————— //
 

@@ -12,19 +12,22 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Scene.h"
+#include "../Level.h"
 #include "../Utility.h"
 #include "SlimeEntity.h"
 
-SlimeEntity::SlimeEntity(Scene* scene) : Entity(scene) {
+SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
 	set_motion_type(TOP_DOWN);
-	set_speed(1.0f);
+	set_speed(0.9f);
 	set_scale(glm::vec3(0.3f, 0.5f, 0.0f));
 	set_sprite_scale(glm::vec3(0.3f, 0.5f, 0.0f));
 	set_collision(false);
 	m_texture_id = Utility::load_texture("assets/placeholder.png");
-	m_ai_state = MOVE_UP;
-	m_slime_type = BASIC;
-	m_health = 10.0f;
+	m_ai_state = static_cast<AIState>(dir);
+	m_slime_type = static_cast<SlimeType>(type);
+	m_level = static_cast<Level*>(scene);
+	m_max_health = health;
+	m_health = health;
 }
 
 SlimeEntity::~SlimeEntity() {
@@ -56,9 +59,9 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	}
 
 	// turning logic
-	for (int i = 0; i < get_scene()->m_local_info.turnPointCount; i++) {
+	for (int i = 0; i < m_level->m_turn_point_count; i++) {
 		// check if we're near a turn point
-		glm::vec3 turnPoint = get_scene()->m_local_info.turnPoints[i];
+		glm::vec3 turnPoint = m_level->m_turn_points[i];
 		if (abs(get_position().x - turnPoint.x) > 0.5 or abs(get_position().y - turnPoint.y) > 0.5) continue;
 		
 		// calculate the corner to turn around
@@ -72,21 +75,39 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 			m_ai_state = static_cast<AIState>((m_ai_state + 4 + (turnPoint.z ? -1 : 1)) % 4);
 		}
 	}
-
-	// decrement turn cooldown
 	if (m_turn_cooldown > 0) m_turn_cooldown -= delta_time;
+
+	// check for path end
+	if (check_collision(m_level->e_path_end)) {
+		m_level->m_lives -= 1;
+		despawn();
+		return;
+	}
+
+	// check other collisions
+	for (int i = 0; i < m_level->m_entity_cap; i++) {
+		Entity* other = m_level->m_state.entities[i];
+		if (!other) continue;
+
+		if (check_collision(other) and typeid(*other) != typeid(SlimeEntity) and glm::length(other->get_velocity()) > 0) {
+			// if it's not a slime and it's moving, it's a bullet
+			m_health -= 1;
+			other->despawn();
+		}
+	}
 
 	// check for death trigger
 	if (m_health <= 0) {
 		if (m_slime_type == SPLIT or m_slime_type == MULTIPLY) {
 			// spawn new slimes
 		}
-		// reward points
+		m_level->m_money += 1;
 		despawn();
+		return;
 	}
 
 	// health regeneration
-	if (m_slime_type == REGEN or m_slime_type == MULTIPLY) {
+	if ((m_slime_type == REGEN or m_slime_type == MULTIPLY) and m_health < m_max_health) {
 		m_health += 0.1f;
 	}
 

@@ -15,6 +15,7 @@ private:
     int m_array_index = -1;
     bool m_is_active = true;
     bool m_has_collision = true;
+    float m_despawn_timer = -1;
     MotionType m_motion_type = NONE;
 
     // ––––– PHYSICS ––––– //
@@ -118,4 +119,5 @@ public:
     void const set_active(bool new_active) { m_is_active = new_active; };
     void const set_collision(bool new_collision) { m_has_collision = new_collision; };
     void const set_array_index(int new_index) { if (m_array_index == -1) m_array_index = new_index; };
+    void const set_lifetime(float lifetime) { m_despawn_timer = lifetime; };
 };

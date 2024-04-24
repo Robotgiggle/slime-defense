@@ -1,10 +1,10 @@
 #pragma once
-#include "Scene.h"
+#include "Level.h"
 
-class Level1 : public Scene {
+class Level1 : public Level {
 public:
-    // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_slime = m_state.entities[0];
+    // ————— LEVEL-SPECIFIC ENTITIES ————— //
+    
 
     // ————— METHODS ————— //
     Level1(int cap);

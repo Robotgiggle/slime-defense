@@ -9,11 +9,6 @@ struct GlobalInfo {
     bool gamePaused = false;
 };
 
-struct LocalInfo {
-    glm::vec3 turnPoints[10] = {glm::vec4(0.0f)};
-    int turnPointCount = 0;
-};
-
 struct GameState {
     GameState(int cap) { entities = new Entity * [cap] {}; }
 
@@ -25,8 +20,6 @@ struct GameState {
     Mix_Chunk* coinSfx;
     Mix_Chunk* stompSfx;
     Mix_Chunk* deathSfx;
-
-    int nextSceneID;
 };
 
 class Scene {
@@ -37,8 +30,8 @@ public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
     GlobalInfo* m_global_info;
-    LocalInfo m_local_info;
     const int m_entity_cap;
+    int m_next_scene_id;
     int m_unordered_render_start = 0;
     float m_timer = 0.0f;
 

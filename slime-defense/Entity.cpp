@@ -209,6 +209,11 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
     m_model_matrix = glm::rotate(m_model_matrix, glm::radians(m_angle), glm::vec3(0.0f, 0.0f, 1.0f));
     m_model_matrix = glm::scale(m_model_matrix, m_scale);
 
+    // ––––– TIMED DESPAWN ––––– //
+    if (m_despawn_timer > -1.0f) {
+        m_despawn_timer -= delta_time;
+        if (m_despawn_timer <= 0.0f) despawn();
+    }
 }
 
 void const Entity::check_solid_collision(Entity* solid_entities, int solid_entity_count)

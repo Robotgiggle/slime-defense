@@ -7,6 +7,8 @@ private:
 	enum SlimeType { BASIC, REGEN, SPLIT, MULTIPLY, BOSS };
 	AIState m_ai_state;
 	SlimeType m_slime_type;
+	Level* m_level;
+	float m_max_health;
 	float m_health;
 	float m_turn_cooldown = 0.0f;
 
@@ -15,7 +17,7 @@ private:
 		glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f)
 	};
 public:
-	SlimeEntity(Scene* scene);
+	SlimeEntity(Scene* scene, int type, float health, int dir);
 	~SlimeEntity();
 
 	// ————— CUSTOM UPDATE METHOD ————— //
@@ -23,6 +25,7 @@ public:
 
 	// ————— GETTERS ————— //
 	AIState const get_ai_state() const { return m_ai_state; };
+	Level*  const get_level()    const { return m_level; };
 
 	// ————— SETTERS ————— //
 	void const set_ai_state(AIState new_state) { m_ai_state = new_state; };

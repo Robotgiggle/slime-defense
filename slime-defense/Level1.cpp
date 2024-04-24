@@ -14,6 +14,7 @@
 #include "Level1.h"
 #include "Utility.h"
 #include "entities/SlimeEntity.h"
+#include "entities/TurretEntity.h"
 
 // terrain map
 const int LV1_WIDTH = 9,
@@ -29,8 +30,7 @@ const int LV1_DATA[] = {
 };
 
 // sprite filepaths
-const char SPRITESHEET_FILEPATH[] = "assets/default_player.png",
-           NPC_FILEPATH[] = "assets/default_npc.png",
+const char PLACEHOLDER_FILEPATH[] = "assets/placeholder.png",
            MAP_TILES_FILEPATH[] = "assets/default_platform.png";
 
 // audio filepaths
@@ -40,29 +40,48 @@ const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
 const float ACC_OF_GRAVITY = -4.91f;
 
 // constructor definition
-Level1::Level1(int cap) : Scene(cap) {}
+Level1::Level1(int cap) : Level(cap) {}
 
 // other methods
 void Level1::initialise() {
+    // ————— BASICS ————— //
     Scene::initialise();
+    m_next_scene_id = 1;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 3, 1);
 
-    m_local_info.turnPoints[0] = glm::vec3(1.0f, 5.0f, 0.0f);
-    m_local_info.turnPoints[1] = glm::vec3(4.0f, 5.0f, 0.0f);
-    m_local_info.turnPoints[2] = glm::vec3(4.0f, 2.0f, 1.0f);
-    m_local_info.turnPointCount = 3;
+    m_turn_points[0] = glm::vec3(1.0f, 5.0f, 0.0f);
+    m_turn_points[1] = glm::vec3(4.0f, 5.0f, 0.0f);
+    m_turn_points[2] = glm::vec3(4.0f, 2.0f, 1.0f);
+    m_turn_point_count = 3;
 
-    // ————— TEST SLIME ————— //
-    e_slime = new SlimeEntity(this);
-    e_slime->set_position(glm::vec3(1.0f, 0.0f, 0.0f));
+    // ————— PATH END ————— //
+    e_path_end = new Entity(this);
 
-    SlimeEntity* newSlime = spawn<SlimeEntity>(this);
+    e_path_end->set_position(glm::vec3(7.3f, 2.0f, 0.0f));
+    e_path_end->set_scale(glm::vec3(0.4f, 1.0f, 0.0f));
+    e_path_end->set_sprite_scale(glm::vec3(0.4f, 1.0f, 0.0f));
+
+    e_path_end->m_texture_id = Utility::load_texture(PLACEHOLDER_FILEPATH);
+
+    // ————— TURRETS (testing) ————— //
+    TurretEntity* newTurret;
+
+    newTurret = spawn<TurretEntity>(this);
+    newTurret->set_position(glm::vec3(2.0f, 4.0f, 0.0f));
+
+    // ————— SLIMES (testing) ————— //
+    SlimeEntity* newSlime;
+
+    newSlime = spawn<SlimeEntity>(this, 0, 4.0f, 0);
+    newSlime->set_position(glm::vec3(1.0f, 0.0f, 0.0f));
+
+    newSlime = spawn<SlimeEntity>(this, 0, 4.0f, 0);
     newSlime->set_position(glm::vec3(0.7f, -0.7f, 0.0f));
 
-    newSlime = spawn<SlimeEntity>(this);
+    newSlime = spawn<SlimeEntity>(this, 0, 4.0f, 0);
     newSlime->set_position(glm::vec3(1.3f, -1.0f, 0.0f));
 
     // ————— AUDIO ————— //
