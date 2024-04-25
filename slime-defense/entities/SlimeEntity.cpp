@@ -17,7 +17,7 @@
 
 SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
 	set_motion_type(TOP_DOWN);
-	set_speed(0.9f);
+	set_speed(0.8f);
 	set_scale(glm::vec3(0.3f, 0.5f, 0.0f));
 	set_sprite_scale(glm::vec3(0.3f, 0.5f, 0.0f));
 	set_collision(false);

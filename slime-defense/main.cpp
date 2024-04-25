@@ -20,7 +20,12 @@
 // window size
 const int WINDOW_WIDTH = 648,
           WINDOW_HEIGHT = 504;
-          //WINDOW_HEIGHT = 567;
+          //WINDOW_HEIGHT = 648;
+
+// camera size
+const float CAMERA_WIDTH = 9.0f,
+            CAMERA_HEIGHT = 7.0f;
+            //CAMERA_HEIGHT = 9.0f;
 
 // background color
 const float BG_RED = 0.60f,
@@ -89,7 +94,7 @@ void initialise()
     g_shaderProgram.load(V_SHADER_PATH, F_SHADER_PATH);
 
     g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.0f, -3.0f, 0.0f));
-    g_projectionMatrix = glm::ortho(-4.5f, 4.5f, -3.5f, 3.5f, -1.0f, 1.0f);
+    g_projectionMatrix = glm::ortho(-CAMERA_WIDTH/2, CAMERA_WIDTH/2, -CAMERA_HEIGHT/2, CAMERA_HEIGHT/2, -1.0f, 1.0f);
     //g_projectionMatrix = glm::ortho(-4.5f, 4.5f, -4.5f, 3.5f, -1.0f, 1.0f);
 
     g_shaderProgram.set_projection_matrix(g_projectionMatrix);
@@ -130,8 +135,8 @@ void process_input()
     // track mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
-    g_globalInfo.mousePos.x = ((x / 648.0f) * 9.0f) - 0.5f;
-    g_globalInfo.mousePos.y = (((504.0f - y) / 504.0f) * 7.0f) - 0.5f;
+    g_globalInfo.mousePos.x = ((float(x) / WINDOW_WIDTH) * CAMERA_WIDTH) - 0.5f;
+    g_globalInfo.mousePos.y = (((WINDOW_HEIGHT - float(y)) / WINDOW_HEIGHT) * CAMERA_HEIGHT) - 0.5f;
 }
 
 void update()

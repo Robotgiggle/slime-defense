@@ -7,6 +7,7 @@
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <vector>
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
@@ -20,6 +21,7 @@ Level::Level(int cap) : Scene(cap) {}
 void Level::initialise() {
 	// ————— BASICS ————— //
 	Scene::initialise();
+	m_current_wave = -1;
 
 	// ————— HELD ITEM ————— //
 	e_cursor_item = new Entity(this);
@@ -68,10 +70,7 @@ void Level::process_event(SDL_Event event) {
 				Entity* other = m_state.entities[i];
 				if (!other) continue;
 				if (typeid(*other) != typeid(TurretEntity)) continue;
-				if (e_cursor_item->check_collision(other)) {
-					LOG("other turret here");
-					validPlacement = false;
-				}
+				if (e_cursor_item->check_collision(other)) validPlacement = false;
 			}
 			// if placement is still valid, spawn a new turret
 			if (validPlacement) {
@@ -87,6 +86,9 @@ void Level::process_event(SDL_Event event) {
 	case SDL_KEYDOWN:
 		// process keydown triggers
 		switch (event.key.keysym.sym) {
+		case SDLK_SPACE:
+			if (is_empty(m_waves[m_current_wave])) m_current_wave++;
+			break;
 		case SDLK_r:
 			this->initialise();
 			break;
@@ -112,9 +114,78 @@ void Level::update(float delta_time) {
 		e_cursor_item->set_position(m_global_info->mousePos);
 	}
 	
+	// slime wave spawning
+	if (m_current_wave > -1) {
+		// count slimes in spawn zone
+		int spawnDensity = 0;
+		std::vector<Entity*> slimes;
+		for (int i = 0; i < m_entity_cap; i++) {
+			Entity* entity = m_state.entities[i];
+			if (!entity) continue;
+			if (typeid(*entity) != typeid(SlimeEntity)) continue;
+			if (glm::distance(entity->get_position(), m_spawn_point) <= 0.8f) {
+				slimes.push_back(entity);
+				spawnDensity += 1;
+			}
+		}
+	
+		// if current density < wave density, spawn more slimes
+		SlimeWave& wave = m_waves[m_current_wave];
+		if (!is_empty(wave) and spawnDensity < wave.density) {
+			// pick a spawn location and make sure it's not overlapping any existing slimes
+			glm::vec3 offset = glm::vec3((rand() % 70 - 35) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
+			bool overlap = false;
+			for (Entity* slime : slimes) {
+				if (glm::distance(m_spawn_point + offset, slime->get_position()) <= 0.5f) overlap = true;
+			}
+			if (!overlap) {
+				// pick a slime type from the ones remaining in the wave, and spawn it
+				SlimeEntity* newSlime;
+				while (true) {
+					int type = rand() % 20;
+					if (type < 6) {
+						if (!wave.basics) continue;
+						newSlime = spawn<SlimeEntity>(this, 0, 5.0f, m_start_dir);
+						newSlime->set_position(m_spawn_point + offset);
+						wave.basics--;
+					}
+					else if (type < 10) {
+						if (!wave.regens) continue;
+						newSlime = spawn<SlimeEntity>(this, 1, 5.0f, m_start_dir);
+						newSlime->set_position(m_spawn_point + offset);
+						wave.regens--;
+					}
+					else if (type < 14) {
+						if (!wave.splits) continue;
+						newSlime = spawn<SlimeEntity>(this, 2, 5.0f, m_start_dir);
+						newSlime->set_position(m_spawn_point + offset);
+						wave.splits--;
+					}
+					else if (type < 18) {
+						if (!wave.multis) continue;
+						newSlime = spawn<SlimeEntity>(this, 3, 5.0f, m_start_dir);
+						newSlime->set_position(m_spawn_point + offset);
+						wave.multis--;
+					}
+					else {
+						if (!wave.bosses) continue;
+						newSlime = spawn<SlimeEntity>(this, 4, 10.0f, m_start_dir);
+						newSlime->set_position(m_spawn_point + offset);
+						wave.bosses--;
+					}
+					break;
+				}
+			}
+		}
+	}
+	
 	Scene::update(delta_time);
 }
 
 void Level::render(ShaderProgram* program) {
 	Scene::render(program);
+}
+
+bool Level::is_empty(const SlimeWave& wave) {
+	return (!wave.basics and !wave.regens and !wave.splits and !wave.multis and !wave.bosses);
 }

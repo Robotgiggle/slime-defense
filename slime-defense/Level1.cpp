@@ -52,10 +52,18 @@ void Level1::initialise() {
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
     m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 3);
 
+    m_start_dir = 0;
+    m_spawn_point = glm::vec3(1.0f, -1.5f, 0.0f);
     m_turn_points[0] = glm::vec3(1.0f, 5.0f, 0.0f);
     m_turn_points[1] = glm::vec3(4.0f, 5.0f, 0.0f);
     m_turn_points[2] = glm::vec3(4.0f, 2.0f, 1.0f);
     m_turn_point_count = 3;
+
+    // ————— WAVES ————— //
+    m_waves[0] = SlimeWave{ 1, 5, 0, 0, 0, 0 };
+    m_waves[1] = SlimeWave{ 1, 6, 0, 0, 0, 0 };
+    m_waves[2] = SlimeWave{ 2, 7, 0, 0, 0, 0 };
+    m_wave_count = 3;
 
     // ————— PATH END ————— //
     e_path_end = new Entity(this);
@@ -65,18 +73,6 @@ void Level1::initialise() {
     e_path_end->set_sprite_scale(glm::vec3(0.4f, 1.0f, 0.0f));
 
     e_path_end->m_texture_id = Utility::load_texture(PLACEHOLDER_FILEPATH);
-
-    // ————— SLIMES (testing) ————— //
-    SlimeEntity* newSlime;
-
-    newSlime = spawn<SlimeEntity>(this, 0, 5.0f, 0);
-    newSlime->set_position(glm::vec3(1.0f, 0.0f, 0.0f));
-
-    newSlime = spawn<SlimeEntity>(this, 0, 5.0f, 0);
-    newSlime->set_position(glm::vec3(0.7f, -0.7f, 0.0f));
-
-    newSlime = spawn<SlimeEntity>(this, 0, 5.0f, 0);
-    newSlime->set_position(glm::vec3(1.3f, -1.0f, 0.0f));
 
     // ————— AUDIO ————— //
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
