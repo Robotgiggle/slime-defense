@@ -1,6 +1,8 @@
 #pragma once
 #include "../Entity.h"
 
+class Level;
+
 class SlimeEntity : public Entity {
 private:
 	enum AIState { MOVE_UP, MOVE_RIGHT, MOVE_DOWN, MOVE_LEFT };

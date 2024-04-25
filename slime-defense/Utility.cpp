@@ -19,6 +19,7 @@
 #include "ShaderProgram.h"
 #include <SDL_image.h>
 #include "stb_image.h"
+#include "Entity.h"
 #include "Utility.h"
 
 GLuint Utility::load_texture(const char* filepath)
@@ -105,4 +106,10 @@ void Utility::draw_text(ShaderProgram* program, GLuint font_texture_id, std::str
 
     glDisableVertexAttribArray(program->get_position_attribute());
     glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
+}
+
+bool Utility::touching_entity(glm::vec3 point, Entity* entity, int trueHitbox) {
+    bool nearX = abs(point.x - entity->get_position().x) <= (trueHitbox? entity->get_width() : entity->get_sprite_width()) / 2;
+    bool nearY = abs(point.y - entity->get_position().y) <= (trueHitbox? entity->get_height() : entity->get_sprite_height()) / 2;
+    return (nearX and nearY);
 }

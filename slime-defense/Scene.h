@@ -7,6 +7,7 @@ struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
     bool gamePaused = false;
+    glm::vec3 mousePos;
 };
 
 struct GameState {

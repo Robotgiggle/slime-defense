@@ -99,6 +99,7 @@ void initialise()
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
 
+    for (Scene* scene : ALL_SCENES) scene->m_global_info = &g_globalInfo;
     startup_scene(0);
 
     glEnable(GL_BLEND);
@@ -117,6 +118,7 @@ void process_input()
             g_globalInfo.gameIsRunning = false;
             break;
         default:
+            // send other unprocessed events to the current scene
             g_currentScene->process_event(event);
             break;
         }
@@ -124,6 +126,12 @@ void process_input()
 
     // process other stuff (like key holds)
     g_currentScene->process_input();
+
+    // track mouse position
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    g_globalInfo.mousePos.x = ((x / 648.0f) * 9.0f) - 0.5f;
+    g_globalInfo.mousePos.y = (((504.0f - y) / 504.0f) * 7.0f) - 0.5f;
 }
 
 void update()

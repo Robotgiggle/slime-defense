@@ -11,7 +11,6 @@
 #include "../glm/mat4x4.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
-#include "../Scene.h"
 #include "../Level.h"
 #include "../Utility.h"
 #include "SlimeEntity.h"
@@ -89,7 +88,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		Entity* other = m_level->m_state.entities[i];
 		if (!other) continue;
 
-		if (check_collision(other) and typeid(*other) != typeid(SlimeEntity) and glm::length(other->get_velocity()) > 0) {
+		if (check_collision(other) and typeid(*other) != typeid(SlimeEntity) and glm::length(other->get_movement()) > 0) {
 			// if it's not a slime and it's moving, it's a bullet
 			m_health -= 1;
 			other->despawn();

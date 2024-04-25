@@ -13,6 +13,7 @@ public:
 private:
     Scene* m_scene;
     int m_array_index = -1;
+    bool m_loaded = false;
     bool m_is_active = true;
     bool m_has_collision = true;
     float m_despawn_timer = -1;

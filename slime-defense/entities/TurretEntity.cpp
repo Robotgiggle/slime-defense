@@ -12,7 +12,6 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Scene.h"
-#include "../Level.h"
 #include "../Utility.h"
 #include "SlimeEntity.h"
 #include "TurretEntity.h"
@@ -63,7 +62,7 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 			bullet->set_scale(glm::vec3(0.22f, 0.22f, 0.0f));
 			bullet->set_sprite_scale(glm::vec3(0.22f, 0.22f, 0.0f));
 			bullet->m_texture_id = Utility::load_texture("assets/placeholder.png");
-			m_shot_cooldown = 0.5f;
+			m_shot_cooldown = 0.8f;
 		}
 		break;
 	default:

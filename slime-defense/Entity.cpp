@@ -117,6 +117,7 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
             }
         }
     }
+    if (!m_loaded) m_loaded = true;
 
     // ––––– BASICS ––––– //
     if (!m_is_active) return;
@@ -354,7 +355,7 @@ void const Entity::check_solid_collision(Map* map) {
 
 void Entity::render(ShaderProgram* program)
 {
-    if (!m_is_active) return;
+    if (!m_is_active or !m_loaded) return;
 
     program->set_model_matrix(m_model_matrix);
 
