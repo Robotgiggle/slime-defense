@@ -20,18 +20,18 @@
 const int LV1_WIDTH = 9,
           LV1_HEIGHT = 7;
 const int LV1_DATA[] = {
-    0, 0, 0, 0, 0, 0, 0, 1, 1,
-    0, 2, 0, 0, 2, 0, 0, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1,
-    0, 0, 0, 0, 2, 0, 0, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 1, 1,
+     1, 19, 19, 19, 19,  2, 12,  7,  7,
+    13,  0,  0,  0,  0, 11, 12,  7,  7,
+    13,  0,  4,  6,  0, 11, 12,  7,  7,
+    13,  0, 11, 13,  0, 18, 19,  7,  7,
+    13,  0, 11, 13,  0,  0,  0,  7,  7,
+    13,  0, 11,  8,  5,  5,  5,  7,  7,
+    13,  0, 11, 12, 12, 12, 12,  7,  7,
 };
 
 // sprite filepaths
 const char PLACEHOLDER_FILEPATH[] = "assets/placeholder.png",
-           MAP_TILES_FILEPATH[] = "assets/default_platform.png";
+           MAP_TILES_FILEPATH[] = "assets/tileset.png";
 
 // audio filepaths
 const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
@@ -50,7 +50,7 @@ void Level1::initialise() {
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 3, 1);
+    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 3);
 
     m_turn_points[0] = glm::vec3(1.0f, 5.0f, 0.0f);
     m_turn_points[1] = glm::vec3(4.0f, 5.0f, 0.0f);

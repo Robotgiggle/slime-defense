@@ -49,16 +49,19 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 			m_ai_state = IDLE;
 		} else if (m_shot_cooldown <= 0.0f) {
 			// calculate shot direction
-			glm::vec3 targetDir = glm::normalize(m_target->get_position() - get_position());
+			float rangeFactor = glm::distance(get_position(), m_target->get_position()) / m_range;
+			glm::vec3 predictedPos = m_target->get_position() + m_target->get_velocity() * rangeFactor * 0.28f;
+			glm::vec3 targetDir = glm::normalize(predictedPos - get_position());
 			// shoot a bullet
 			Entity* bullet = get_scene()->spawn<Entity>(get_scene());
 			bullet->set_lifetime(1.0f);
+			bullet->set_collision(false);
 			bullet->set_position(get_position());
 			bullet->set_motion_type(Entity::TOP_DOWN);
 			bullet->set_movement(targetDir);
 			bullet->set_speed(2.5f);
-			bullet->set_scale(glm::vec3(0.2f, 0.2f, 0.0f));
-			bullet->set_sprite_scale(glm::vec3(0.2f, 0.2f, 0.0f));
+			bullet->set_scale(glm::vec3(0.22f, 0.22f, 0.0f));
+			bullet->set_sprite_scale(glm::vec3(0.22f, 0.22f, 0.0f));
 			bullet->m_texture_id = Utility::load_texture("assets/placeholder.png");
 			m_shot_cooldown = 0.5f;
 		}

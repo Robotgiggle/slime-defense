@@ -20,11 +20,12 @@
 // window size
 const int WINDOW_WIDTH = 648,
           WINDOW_HEIGHT = 504;
+          //WINDOW_HEIGHT = 567;
 
 // background color
-const float BG_RED = 0.6509f,
-            BG_BLUE = 0.4706f,
-            BG_GREEN = 0.2000f,
+const float BG_RED = 0.60f,
+            BG_BLUE = 0.40f,
+            BG_GREEN = 0.15f,
             BG_OPACITY = 1.0f;
 
 // viewport position & size
@@ -89,6 +90,7 @@ void initialise()
 
     g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.0f, -3.0f, 0.0f));
     g_projectionMatrix = glm::ortho(-4.5f, 4.5f, -3.5f, 3.5f, -1.0f, 1.0f);
+    //g_projectionMatrix = glm::ortho(-4.5f, 4.5f, -4.5f, 3.5f, -1.0f, 1.0f);
 
     g_shaderProgram.set_projection_matrix(g_projectionMatrix);
     g_shaderProgram.set_view_matrix(g_viewMatrix);
