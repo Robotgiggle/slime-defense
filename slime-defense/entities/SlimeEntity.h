@@ -15,6 +15,7 @@ private:
 	float m_base_length;
 	float m_squish_factor = 0.0f;
 	float m_turn_cooldown = 0.0f;
+	int m_target_point_index = 0;
 
 	const glm::vec3 m_turn_offsets[4] = {
 		glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(-0.5f, -0.5f, 0.0f),
@@ -28,8 +29,10 @@ public:
 	void update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map) override;
 
 	// ————— GETTERS ————— //
-	AIState const get_ai_state() const { return m_ai_state; };
-	Level*  const get_level()    const { return m_level; };
+	AIState   const get_ai_state()   const { return m_ai_state; };
+	Level*    const get_level()      const { return m_level; };
+	glm::vec3 const get_goal_point() const;
+	int       const get_goal_index() const { return m_target_point_index; };
 
 	// ————— SETTERS ————— //
 	void const set_ai_state(AIState new_state) { m_ai_state = new_state; };

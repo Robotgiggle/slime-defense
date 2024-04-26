@@ -6,8 +6,9 @@ private:
 	enum AIState { IDLE, TRACKING };
 	AIState m_ai_state = IDLE;
 	SlimeEntity* m_target = nullptr;
-	float m_shot_cooldown = 0.0f;
+	Level* m_level;
 	float m_range;
+	float m_shot_cooldown = 0.0f;
 public:
 	TurretEntity(Scene* scene);
 	~TurretEntity();

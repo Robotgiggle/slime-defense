@@ -18,14 +18,14 @@
 SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
 	set_motion_type(TOP_DOWN);
 	set_speed(0.8f);
-	set_scale(glm::vec3(0.36f, 0.48f, 0.0f));
-	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f));
+	set_scale(glm::vec3(0.36f, 0.48f, 0.0f) * (health/10.0f + 0.5f));
+	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f) * (health/10.0f + 0.5f));
 	set_collision(false);
 	m_texture_id = Utility::load_texture("assets/test_slime.png");
 	m_ai_state = static_cast<AIState>(dir);
 	m_slime_type = static_cast<SlimeType>(type);
 	m_level = static_cast<Level*>(scene);
-	m_base_length = 0.48f;
+	m_base_length = get_height();
 	m_max_health = health;
 	m_health = health;
 }
@@ -64,20 +64,18 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	if (m_squish_factor >= 360.0f) m_squish_factor -= 360.0f;
 
 	// turning logic
-	for (int i = 0; i < m_level->m_turn_point_count; i++) {
-		// check if we're near a turn point
-		glm::vec3 turnPoint = m_level->m_turn_points[i];
-		if (abs(get_position().x - turnPoint.x) > 0.5 or abs(get_position().y - turnPoint.y) > 0.5) continue;
-		
+	glm::vec3 turnPoint = m_level->m_turn_points[m_target_point_index];
+	if (abs(get_position().x - turnPoint.x) <= 0.5 and abs(get_position().y - turnPoint.y) <= 0.5) {
 		// calculate the corner to turn around
-		glm::vec3 turnCorner = turnPoint + m_turn_offsets[m_ai_state + int(turnPoint.z)];
+		glm::vec3 turnCorner = get_goal_point();
 		float xDist = abs(get_position().x - turnCorner.x);
 		float yDist = abs(get_position().y - turnCorner.y);
-		
+
 		// if we're positioned correctly, make the turn
 		if (abs(xDist - yDist) < 0.01f and m_turn_cooldown <= 0.0f) {
 			m_turn_cooldown = 1.0f;
-			m_ai_state = static_cast<AIState>((m_ai_state + 4 + (turnPoint.z ? -1 : 1)) % 4);
+			m_target_point_index++;
+			m_ai_state = static_cast<AIState>((m_ai_state + 4 + (turnCorner.z ? -1 : 1)) % 4);
 		}
 	}
 	if (m_turn_cooldown > 0) m_turn_cooldown -= delta_time;
@@ -103,8 +101,21 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for death trigger
 	if (m_health <= 0) {
-		if (m_slime_type == SPLIT or m_slime_type == MULTIPLY) {
-			// spawn new slimes
+		if ((m_slime_type == SPLIT or m_slime_type == MULTIPLY) and m_max_health > 2.0f) {
+			SlimeEntity* childSlime;
+			for (int i = 0; i < 2; i++) {
+				childSlime = m_level->spawn<SlimeEntity>(m_level, m_slime_type, floor(m_max_health / 2), m_ai_state);
+				glm::vec3 spawnPos;
+				while (true) {
+					// find a valid location within 0.25 units of the parent
+					spawnPos = get_position() + glm::vec3((rand() % 10 - 5) / 20.0f, (rand() % 10 - 5) / 20.0f, 0.0f);
+					if (m_level->m_state.map->is_solid(spawnPos)) continue;
+					break;
+				}
+				childSlime->set_position(spawnPos);
+				childSlime->m_target_point_index = m_target_point_index;
+				if (m_slime_type == MULTIPLY) childSlime->m_max_health = m_max_health;
+			}
 		}
 		m_level->m_money += 1;
 		despawn();
@@ -113,8 +124,17 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// health regeneration
 	if ((m_slime_type == REGEN or m_slime_type == MULTIPLY) and m_health < m_max_health) {
-		m_health += 0.1f;
+		m_health += 0.005f;
 	}
 
 	Entity::update(delta_time, collidable_entities, collidable_entity_count, map);
+}
+
+glm::vec3 const SlimeEntity::get_goal_point() const {
+	if (m_target_point_index > m_level->m_turn_point_count) {
+		return m_level->e_path_end->get_position();
+	} else {
+		glm::vec3 turnPoint = m_level->m_turn_points[m_target_point_index];
+		return turnPoint + m_turn_offsets[m_ai_state + int(turnPoint.z)];
+	}
 }

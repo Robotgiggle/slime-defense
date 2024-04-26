@@ -51,7 +51,7 @@ void Level::process_event(SDL_Event event) {
 	case SDL_MOUSEBUTTONDOWN:
 		// process click triggers
 		if (m_held_item == NONE) {
-			if (Utility::touching_entity(m_global_info->mousePos, e_game_menu, 0)) {
+			if (Utility::touching_entity(m_global_info->mousePos, e_game_menu, 0) and m_money >= m_turret_cost) {
 				// show a turret in the cursor
 				m_held_item = TURRET;
 				e_cursor_item->set_position(m_global_info->mousePos);
@@ -76,6 +76,7 @@ void Level::process_event(SDL_Event event) {
 			}
 			// if placement is still valid, spawn a new turret
 			if (validPlacement) {
+				m_money -= m_turret_cost++;
 				TurretEntity* newTurret = spawn<TurretEntity>(this);
 				newTurret->set_position(m_global_info->mousePos);
 			}
@@ -89,7 +90,7 @@ void Level::process_event(SDL_Event event) {
 		// process keydown triggers
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE:
-			if (is_empty(m_waves[m_current_wave])) m_current_wave++;
+			if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) m_current_wave++;
 			break;
 		case SDLK_ESCAPE:
 			m_held_item = NONE;
@@ -137,7 +138,7 @@ void Level::update(float delta_time) {
 	
 		// if current density < wave density, spawn more slimes
 		SlimeWave& wave = m_waves[m_current_wave];
-		if (!is_empty(wave) and spawnDensity < wave.density) {
+		if (wave.slimes_left() > 0 and spawnDensity < wave.density) {
 			// pick a spawn location and make sure it's not overlapping any existing slimes
 			glm::vec3 offset = glm::vec3((rand() % 80 - 40) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
 			bool overlap = false;
@@ -192,11 +193,7 @@ void Level::render(ShaderProgram* program) {
 	Scene::render(program);
 	
 	std::string livesDisplay = ((m_lives < 10) ? "%0" : "%") + std::to_string(std::max(0,m_lives));
-	std::string moneyDisplay = ((m_money < 10) ? "$0" : "%") + std::to_string(m_money);
+	std::string moneyDisplay = ((m_money < 10) ? "$0" : "$") + std::to_string(m_money);
 	Utility::draw_text(program, m_font_texture_id, livesDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.8f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
-}
-
-bool Level::is_empty(const SlimeWave& wave) {
-	return (!wave.basics and !wave.regens and !wave.splits and !wave.multis and !wave.bosses);
 }
