@@ -27,7 +27,7 @@ public:
 	int m_wave_count = 0;
 	int m_current_wave = -1;
 	int m_start_dir = 0;
-	int m_lives = 5;
+	int m_lives = 10;
 	int m_money = 0;
 	
 	// ————— METHODS ————— //

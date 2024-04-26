@@ -25,6 +25,7 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 	m_ai_state = static_cast<AIState>(dir);
 	m_slime_type = static_cast<SlimeType>(type);
 	m_level = static_cast<Level*>(scene);
+	m_base_length = 0.48f;
 	m_max_health = health;
 	m_health = health;
 }
@@ -56,6 +57,11 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	default:
 		break;
 	}
+
+	// movment animation
+	set_sprite_height(m_base_length * (1 + 0.08f*sin(m_squish_factor)));
+	m_squish_factor += 8.5f * delta_time;
+	if (m_squish_factor >= 360.0f) m_squish_factor -= 360.0f;
 
 	// turning logic
 	for (int i = 0; i < m_level->m_turn_point_count; i++) {

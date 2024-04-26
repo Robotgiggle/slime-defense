@@ -28,9 +28,9 @@ const float CAMERA_WIDTH = 9.0f,
             //CAMERA_HEIGHT = 9.0f;
 
 // background color
-const float BG_RED = 0.60f,
-            BG_BLUE = 0.40f,
-            BG_GREEN = 0.15f,
+const float BG_RED = 0.50f,
+            BG_BLUE = 0.50f,
+            BG_GREEN = 0.50f,
             BG_OPACITY = 1.0f;
 
 // viewport position & size

@@ -8,6 +8,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <vector>
+#include <string>
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
@@ -22,6 +23,7 @@ void Level::initialise() {
 	// ————— BASICS ————— //
 	Scene::initialise();
 	m_current_wave = -1;
+	m_font_texture_id = Utility::load_texture("assets/display_font.png");
 
 	// ————— HELD ITEM ————— //
 	e_cursor_item = new Entity(this);
@@ -137,10 +139,10 @@ void Level::update(float delta_time) {
 		SlimeWave& wave = m_waves[m_current_wave];
 		if (!is_empty(wave) and spawnDensity < wave.density) {
 			// pick a spawn location and make sure it's not overlapping any existing slimes
-			glm::vec3 offset = glm::vec3((rand() % 70 - 35) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
+			glm::vec3 offset = glm::vec3((rand() % 80 - 40) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
 			bool overlap = false;
 			for (Entity* slime : slimes) {
-				if (glm::distance(m_spawn_point + offset, slime->get_position()) <= 0.5f) overlap = true;
+				if (glm::distance(m_spawn_point + offset, slime->get_position()) <= 0.4f) overlap = true;
 			}
 			if (!overlap) {
 				// pick a slime type from the ones remaining in the wave, and spawn it
@@ -188,6 +190,11 @@ void Level::update(float delta_time) {
 
 void Level::render(ShaderProgram* program) {
 	Scene::render(program);
+	
+	std::string livesDisplay = ((m_lives < 10) ? "%0" : "%") + std::to_string(std::max(0,m_lives));
+	std::string moneyDisplay = ((m_money < 10) ? "$0" : "%") + std::to_string(m_money);
+	Utility::draw_text(program, m_font_texture_id, livesDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.8f, 0.0f));
+	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
 }
 
 bool Level::is_empty(const SlimeWave& wave) {

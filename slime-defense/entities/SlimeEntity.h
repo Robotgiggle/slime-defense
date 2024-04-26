@@ -12,6 +12,8 @@ private:
 	Level* m_level;
 	float m_max_health;
 	float m_health;
+	float m_base_length;
+	float m_squish_factor = 0.0f;
 	float m_turn_cooldown = 0.0f;
 
 	const glm::vec3 m_turn_offsets[4] = {

@@ -31,6 +31,7 @@ public:
     // ————— ATTRIBUTES ————— //
     GameState m_state;
     GlobalInfo* m_global_info;
+    GLuint m_font_texture_id;
     const int m_entity_cap;
     int m_next_scene_id;
     int m_unordered_render_start = 0;
