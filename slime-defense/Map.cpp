@@ -46,9 +46,6 @@ void Map::build()
             // Get the current tile
             int tile = m_level_data[y_coord * m_width + x_coord];
 
-            // If the tile number is 0 i.e. not solid, skip to the next one
-            if (tile == 0) continue;
-
             // Otherwise, calculate its UV-coordinated
             float u_coord = (float)(tile % m_tilemap_width) / (float)m_tilemap_width;
             float v_coord = (float)(tile / m_tilemap_width) / (float)m_tilemap_height;

@@ -89,6 +89,10 @@ void Level::process_event(SDL_Event event) {
 		case SDLK_SPACE:
 			if (is_empty(m_waves[m_current_wave])) m_current_wave++;
 			break;
+		case SDLK_ESCAPE:
+			m_held_item = NONE;
+			e_cursor_item->set_active(false);
+			break;
 		case SDLK_r:
 			this->initialise();
 			break;

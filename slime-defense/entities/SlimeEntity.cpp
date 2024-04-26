@@ -18,10 +18,10 @@
 SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
 	set_motion_type(TOP_DOWN);
 	set_speed(0.8f);
-	set_scale(glm::vec3(0.3f, 0.5f, 0.0f));
-	set_sprite_scale(glm::vec3(0.3f, 0.5f, 0.0f));
+	set_scale(glm::vec3(0.36f, 0.48f, 0.0f));
+	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f));
 	set_collision(false);
-	m_texture_id = Utility::load_texture("assets/placeholder.png");
+	m_texture_id = Utility::load_texture("assets/test_slime.png");
 	m_ai_state = static_cast<AIState>(dir);
 	m_slime_type = static_cast<SlimeType>(type);
 	m_level = static_cast<Level*>(scene);
