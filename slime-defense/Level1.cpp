@@ -63,7 +63,9 @@ void Level1::initialise() {
     m_waves[0] = SlimeWave{ 1, 6, 0, 0, 0, 0 };
     m_waves[1] = SlimeWave{ 1, 7, 2, 2, 0, 0 };
     m_waves[2] = SlimeWave{ 2, 6, 3, 3, 0, 0 };
-    m_wave_count = 3;
+    m_waves[3] = SlimeWave{ 2, 6, 3, 2, 2, 0 };
+    m_waves[4] = SlimeWave{ 3,12, 0, 0, 0, 1 };
+    m_wave_count = 5;
 
     // ————— PATH END ————— //
     e_path_end = new Entity(this);

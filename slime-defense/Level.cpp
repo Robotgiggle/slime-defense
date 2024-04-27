@@ -23,6 +23,9 @@ void Level::initialise() {
 	// ————— BASICS ————— //
 	Scene::initialise();
 	m_current_wave = -1;
+	m_turret_cost = 2;
+	m_lives = 10;
+	m_money = 5;
 	m_font_texture_id = Utility::load_texture("assets/display_font.png");
 
 	// ————— HELD ITEM ————— //
@@ -115,6 +118,13 @@ void Level::process_input()
 }
 
 void Level::update(float delta_time) {
+	// turn point safety
+	if (m_turn_points[m_turn_point_count] == glm::vec3(0.0f)) {
+		for (int i = m_turn_point_count; i < 10; i++) {
+			m_turn_points[i] = e_path_end->get_position();
+		}
+	}
+
 	// held item cursor tracking
 	if (m_held_item != NONE) {
 		e_cursor_item->set_active(true);
@@ -169,14 +179,14 @@ void Level::update(float delta_time) {
 						wave.splits--;
 					}
 					else if (type < 18) {
-						if (!wave.multis) continue;
+						if (!wave.elites) continue;
 						newSlime = spawn<SlimeEntity>(this, 3, 5.0f, m_start_dir);
 						newSlime->set_position(m_spawn_point + offset);
-						wave.multis--;
+						wave.elites--;
 					}
 					else {
 						if (!wave.bosses) continue;
-						newSlime = spawn<SlimeEntity>(this, 4, 10.0f, m_start_dir);
+						newSlime = spawn<SlimeEntity>(this, 4, 12.0f, m_start_dir);
 						newSlime->set_position(m_spawn_point + offset);
 						wave.bosses--;
 					}

@@ -27,6 +27,7 @@ void ShaderProgram::load(const char *vertex_shader_file, const char *fragment_sh
     m_projection_matrix_uniform = glGetUniformLocation(m_program_id, "projectionMatrix");
     m_view_matrix_uniform       = glGetUniformLocation(m_program_id, "viewMatrix");
     m_colour_uniform            = glGetUniformLocation(m_program_id, "color");
+    m_tint_uniform              = glGetUniformLocation(m_program_id, "tint");
     
     m_position_attribute  = glGetAttribLocation(m_program_id, "position");
     m_tex_coord_attribute = glGetAttribLocation(m_program_id, "texCoord");
@@ -86,6 +87,11 @@ GLuint ShaderProgram::load_shader_from_string(const std::string &shaderContents,
     
     // return the shader id
     return shaderID;
+}
+
+void ShaderProgram::set_tint(glm::vec3 tint) {
+    glUseProgram(m_program_id);
+    glUniform3f(m_tint_uniform, tint.x, tint.y, tint.z);
 }
 
 void ShaderProgram::set_colour(float red, float green, float blue, float alpha)

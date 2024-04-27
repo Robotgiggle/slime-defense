@@ -40,7 +40,7 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 			if (typeid(*other) == typeid(SlimeEntity) and glm::distance(get_position(), other->get_position()) <= m_range) {
 				SlimeEntity* slime = static_cast<SlimeEntity*>(other);
 				// target whichever slime is furthest forward
-				float distToGoal = glm::distance(slime->get_position(), slime->get_goal_point());
+				float distToGoal = glm::distance(slime->get_position(), slime->get_goal_corner());
 				if (distToGoal < lowestGoalDist and slime->get_goal_index() >= furthestGoalIndex) {
 					lowestGoalDist = distToGoal;
 					furthestGoalIndex = slime->get_goal_index();

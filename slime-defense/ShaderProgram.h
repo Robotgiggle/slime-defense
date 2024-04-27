@@ -25,6 +25,7 @@ private:
     GLuint m_model_matrix_uniform;
     GLuint m_view_matrix_uniform;
     GLuint m_colour_uniform;
+    GLuint m_tint_uniform;
 
     GLuint m_position_attribute;
     GLuint m_tex_coord_attribute;
@@ -40,6 +41,7 @@ public:
     void set_projection_matrix(const glm::mat4 &matrix);
     void set_view_matrix(const glm::mat4 &matrix);
     void set_colour(float red, float green, float blue, float alpha);
+    void set_tint(glm::vec3 tint);
     
     GLuint const get_program_id()               const { return m_program_id;          };
     GLuint const get_position_attribute()       const { return m_position_attribute;  };

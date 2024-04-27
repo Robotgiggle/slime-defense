@@ -113,5 +113,6 @@
     <None Include="shaders\fragment_textured.glsl" />
     <None Include="shaders\vertex.glsl" />
     <None Include="shaders\vertex_textured.glsl" />
+    <None Include="shaders\tinted_fragment_textured.glsl" />
   </ItemGroup>
 </Project>

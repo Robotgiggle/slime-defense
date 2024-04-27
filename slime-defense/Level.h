@@ -6,10 +6,10 @@ struct SlimeWave {
 	int basics;
 	int regens;
 	int splits;
-	int multis;
+	int elites;
 	int bosses;
 	int slimes_left() const {
-		return basics + regens + splits + multis + bosses;
+		return basics + regens + splits + elites + bosses;
 	}
 };
 

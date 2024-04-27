@@ -41,7 +41,7 @@ const int VIEWPORT_X = 0,
 
 // shader filepaths
 const char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
-           F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
+           F_SHADER_PATH[] = "shaders/tinted_fragment_textured.glsl";
 
 // time constants
 const float MILLISECONDS_IN_SECOND = 1000.0;
@@ -50,7 +50,7 @@ const float FIXED_TIMESTEP = 0.0166666f;
 // scenes
 const int NUM_OF_SCENES = 1;
 Scene* const ALL_SCENES[] = {
-    new Level1(60)
+    new Level1(100)
 };
 
 // ————— VARIABLES ————— //
@@ -99,6 +99,7 @@ void initialise()
 
     g_shaderProgram.set_projection_matrix(g_projectionMatrix);
     g_shaderProgram.set_view_matrix(g_viewMatrix);
+    g_shaderProgram.set_tint(glm::vec3(0.65f, 0.65f, 0.65f));
 
     glUseProgram(g_shaderProgram.get_program_id());
 
