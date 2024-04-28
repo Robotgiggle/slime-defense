@@ -70,6 +70,7 @@ float g_timeAccumulator = 0.0f;
 
 // ———— GENERAL FUNCTIONS ———— //
 void startup_scene(int index) {
+    g_globalInfo.changeScenes = false;
     g_currentScene = ALL_SCENES[index];
     g_currentScene->initialise();
 }

@@ -38,9 +38,13 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 }
 
 SlimeEntity::~SlimeEntity() {
-	// if this was the last slime, enable the next-level button
-	if (m_level->m_current_wave == m_level->m_wave_count - 1 and m_level->m_slimes_alive == 0) {
-		m_level->e_next_button->m_animation_index = 2;
+	// if this was the last slime, enable the next-wave or next-level button
+	if (m_level->m_slimes_alive == 0) {
+		if (m_level->m_current_wave == m_level->m_wave_count - 1) {
+			m_level->e_next_button->m_animation_index = 2;
+		} else {
+			m_level->e_next_button->m_animation_index = 1;
+		}
 	}
 }
 
@@ -153,13 +157,14 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		// basic death effects
 		m_level->m_slimes_alive--;
 		m_level->m_money++;
+		if (m_level->m_money >= m_level->m_turret_cost) m_level->e_turret_button->m_animation_index = 1;
 		despawn();
 		return;
 	}
 
 	// health regeneration
 	if (m_slime_type != BASIC and m_slime_type != SPLIT and m_health < m_max_health) {
-		if (m_slime_type == BOSS) m_health += 0.02f;
+		if (m_slime_type == BOSS) m_health += 0.03f;
 		else m_health += 0.005f;
 	}
 

@@ -45,13 +45,24 @@ void Level::initialise() {
 	e_game_menu->set_sprite_scale(glm::vec3(2.0f, 7.0f, 0.0f));
 	e_game_menu->set_collision(false);
 
-	e_game_menu->m_texture_id = Utility::load_texture("assets/placeholder.png");
+	e_game_menu->m_texture_id = Utility::load_texture("assets/game_menu.png");
+
+	// ————— TURRET BUTTON ————— //
+	e_turret_button = new Entity(this);
+
+	e_turret_button->set_position(glm::vec3(7.16f, 3.66f, 0.0f));
+	e_turret_button->set_sprite_scale(glm::vec3(0.85f, 0.85f, 0.0f));
+	e_turret_button->set_collision(false);
+
+	e_turret_button->m_texture_id = Utility::load_texture("assets/turret_button.png");
+	e_turret_button->m_animation_indices = new int[2] { 0, 1 };
+	e_turret_button->setup_anim(1, 2, 2, 0, 2, 1);
 
 	// ————— NEXT-WAVE BUTTON ————— //
 	e_next_button = new Entity(this);
 
 	e_next_button->set_position(glm::vec3(7.5f, 0.25f, 0.0f));
-	e_next_button->set_sprite_scale(glm::vec3(1.6f, 0.8f, 0.0f));
+	e_next_button->set_sprite_scale(glm::vec3(1.5f, 0.75f, 0.0f));
 	e_next_button->set_collision(false);
 
 	e_next_button->m_texture_id = Utility::load_texture("assets/next_button.png");
@@ -75,7 +86,7 @@ void Level::process_event(SDL_Event event) {
 					e_next_button->m_animation_index = 0;
 					m_current_wave++;
 				}
-			} else if (Utility::touching_entity(m_global_info->mousePos, e_game_menu, 0) and m_money >= m_turret_cost) {
+			} else if (Utility::touching_entity(m_global_info->mousePos, e_turret_button, 0) and m_money >= m_turret_cost) {
 				// show a turret in the cursor
 				m_held_item = TURRET;
 				e_cursor_item->set_position(m_global_info->mousePos);
@@ -100,7 +111,9 @@ void Level::process_event(SDL_Event event) {
 			}
 			// if placement is still valid, spawn a new turret
 			if (validPlacement) {
-				m_money -= m_turret_cost++;
+				m_money -= m_turret_cost;
+				m_turret_cost = glm::min(++m_turret_cost, 9);
+				if (m_money < m_turret_cost) e_turret_button->m_animation_index = 0;
 				TurretEntity* newTurret = spawn<TurretEntity>(this);
 				newTurret->set_position(m_global_info->mousePos);
 			}
@@ -185,6 +198,7 @@ void Level::update(float delta_time) {
 			}
 			if (!overlap) {
 				// pick a slime type from the ones remaining in the wave, and spawn it
+				m_slimes_alive++;
 				SlimeEntity* newSlime;
 				while (true) {
 					int type = rand() % 20;
@@ -218,21 +232,10 @@ void Level::update(float delta_time) {
 						newSlime->set_position(m_spawn_point + offset);
 						wave.bosses--;
 					}
-					// increment slime counter
-					m_slimes_alive++;
-					// activate the next-wave button if necessary, on a short delay
-					if (wave.slimes_left() == 0 and m_current_wave < m_wave_count - 1) {
-						m_timer = 2.5f;
-					}
 					break;
 				}
 			}
 		}
-	}
-	
-	// next-wave button activation
-	if (m_timer > 0.0f and m_timer <= 1.0f) {
-		e_next_button->m_animation_index = 1;
 	}
 
 	Scene::update(delta_time);
@@ -243,6 +246,10 @@ void Level::render(ShaderProgram* program) {
 	
 	std::string livesDisplay = ((m_lives < 10) ? "%0" : "%") + std::to_string(std::max(0,m_lives));
 	std::string moneyDisplay = ((m_money < 10) ? "$0" : "$") + std::to_string(m_money);
+	std::string slimeDisplay = ((m_slimes_alive < 10) ? "&0" : "&") + std::to_string(m_slimes_alive);
+	std::string turretCost = "$" + std::to_string(m_turret_cost);
 	Utility::draw_text(program, m_font_texture_id, livesDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.8f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
+	Utility::draw_text(program, m_font_texture_id, slimeDisplay, 0.5f, -0.04f, glm::vec3(7.0f, 1.1f, 0.0f));
+	Utility::draw_text(program, m_font_texture_id, turretCost, 0.35f, -0.03f, glm::vec3(7.81f, 3.66f, 0.0f));
 }
