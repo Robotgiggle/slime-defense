@@ -88,9 +88,6 @@
     <Image Include="assets\placeholder.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\test_slime.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\tileset.png">
       <Filter>Resource Files</Filter>
     </Image>

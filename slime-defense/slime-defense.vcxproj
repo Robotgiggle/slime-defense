@@ -161,7 +161,6 @@
     <Image Include="assets\default_font.png" />
     <Image Include="assets\display_font.png" />
     <Image Include="assets\placeholder.png" />
-    <Image Include="assets\test_slime.png" />
     <Image Include="assets\tileset.png" />
   </ItemGroup>
   <ItemGroup>

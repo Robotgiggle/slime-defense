@@ -95,11 +95,10 @@ void initialise()
 
     g_viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-4.0f, -3.0f, 0.0f));
     g_projectionMatrix = glm::ortho(-CAMERA_WIDTH/2, CAMERA_WIDTH/2, -CAMERA_HEIGHT/2, CAMERA_HEIGHT/2, -1.0f, 1.0f);
-    //g_projectionMatrix = glm::ortho(-4.5f, 4.5f, -4.5f, 3.5f, -1.0f, 1.0f);
 
     g_shaderProgram.set_projection_matrix(g_projectionMatrix);
     g_shaderProgram.set_view_matrix(g_viewMatrix);
-    g_shaderProgram.set_tint(glm::vec3(0.65f, 0.65f, 0.65f));
+    g_shaderProgram.no_tint();
 
     glUseProgram(g_shaderProgram.get_program_id());
 

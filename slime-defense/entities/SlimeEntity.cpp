@@ -151,7 +151,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// health regeneration
 	if (m_slime_type != BASIC and m_slime_type != SPLIT and m_health < m_max_health) {
-		if (m_slime_type == BOSS) m_health += 0.01;
+		if (m_slime_type == BOSS) m_health += 0.02f;
 		else m_health += 0.005f;
 	}
 
@@ -161,7 +161,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 void SlimeEntity::render(ShaderProgram* program) {
 	program->set_tint(m_tint);
 	Entity::render(program);
-	program->set_tint(glm::vec3(0.65f, 0.65f, 0.65f));
+	program->no_tint();
 }
 
 glm::vec3 const SlimeEntity::get_goal_corner() const {

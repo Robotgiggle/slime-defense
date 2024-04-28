@@ -32,11 +32,11 @@ void Level::initialise() {
 	e_cursor_item = new Entity(this);
 
 	e_cursor_item->set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
-	e_cursor_item->set_sprite_scale(glm::vec3(0.5f, 0.5f, 0.0f));
+	e_cursor_item->set_sprite_scale(glm::vec3(0.75f, 0.75f, 0.0f));
 	e_cursor_item->set_collision(false);
 	e_cursor_item->set_active(false);
 
-	e_cursor_item->m_texture_id = Utility::load_texture("assets/placeholder.png");
+	e_cursor_item->m_texture_id = Utility::load_texture("assets/turret_full.png");
 
 	// ————— GAME MENU ————— //
 	e_game_menu = new Entity(this);

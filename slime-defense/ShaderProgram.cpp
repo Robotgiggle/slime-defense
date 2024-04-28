@@ -94,6 +94,11 @@ void ShaderProgram::set_tint(glm::vec3 tint) {
     glUniform3f(m_tint_uniform, tint.x, tint.y, tint.z);
 }
 
+void ShaderProgram::no_tint() {
+    glUseProgram(m_program_id);
+    glUniform3f(m_tint_uniform, 0.65f, 0.65f, 0.65f);
+}
+
 void ShaderProgram::set_colour(float red, float green, float blue, float alpha)
 {
     glUseProgram(m_program_id);
