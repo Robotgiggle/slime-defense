@@ -38,7 +38,10 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 }
 
 SlimeEntity::~SlimeEntity() {
-
+	// if this was the last slime, enable the next-level button
+	if (m_level->m_current_wave == m_level->m_wave_count - 1 and m_level->m_slimes_alive == 0) {
+		m_level->e_next_button->m_animation_index = 2;
+	}
 }
 
 void SlimeEntity::update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map) {
@@ -103,6 +106,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for path end
 	if (check_collision(m_level->e_path_end)) {
+		m_level->m_slimes_alive--;
 		m_level->m_lives -= 1;
 		despawn();
 		return;
@@ -122,6 +126,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for death trigger
 	if (m_health <= 0) {
+		// if this was a splitter or an elite, spawn new slimes
 		if ((m_slime_type == SPLIT or m_slime_type == ELITE) and m_max_health > 2.0f) {
 			bool elite = m_slime_type == ELITE;
 			SlimeEntity* childSlime;
@@ -142,9 +147,12 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 				}
 				childSlime->set_position(spawnPos);
 				childSlime->m_target_point_index = m_target_point_index;
+				m_level->m_slimes_alive++;
 			}
 		}
-		m_level->m_money += 1;
+		// basic death effects
+		m_level->m_slimes_alive--;
+		m_level->m_money++;
 		despawn();
 		return;
 	}

@@ -17,7 +17,8 @@ class Level : public Scene {
 public:
 	// ————— CUSTOM ENTITIES ————— //
 	Entity*& e_path_end = m_state.entities[0];
-	Entity*& e_game_menu = m_state.entities[m_entity_cap-2];
+	Entity*& e_game_menu = m_state.entities[m_entity_cap-3];
+	Entity*& e_next_button = m_state.entities[m_entity_cap - 2];
 	Entity*& e_cursor_item = m_state.entities[m_entity_cap - 1];
 
 	// ————— ATTRIBUTES ————— //
@@ -30,12 +31,14 @@ public:
 	SlimeWave m_waves[10] = { SlimeWave() };
 	int m_wave_count = 0;
 	int m_current_wave = -1;
-	// other
+	// turrets
 	enum HeldItem { NONE, TURRET };
 	HeldItem m_held_item;
 	int m_turret_cost = 2;
-	int m_lives = 10;
 	int m_money = 5;
+	// other
+	int m_slimes_alive = 0;
+	int m_lives = 10;
 	
 	// ————— METHODS ————— //
 	Level(int cap);
@@ -45,8 +48,6 @@ public:
 	void process_event(SDL_Event event) override;
 	void update(float delta_time) override;
 	void render(ShaderProgram* program) override;
-
-	bool is_empty(const SlimeWave& wave);
 
 	Entity* get_player() const override { return nullptr; }
 };

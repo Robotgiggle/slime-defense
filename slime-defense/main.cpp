@@ -151,7 +151,12 @@ void update()
     if (g_timeAccumulator < FIXED_TIMESTEP) return;
     while (g_timeAccumulator >= FIXED_TIMESTEP)
     {
+        // update scene, unless the game is paused
         if (!g_globalInfo.gamePaused) g_currentScene->update(FIXED_TIMESTEP);
+
+        // if changeScene is set, move to the next scene
+        if (g_globalInfo.changeScenes) startup_scene(g_currentScene->m_next_scene_id);
+
         g_timeAccumulator -= FIXED_TIMESTEP;
     }
 }

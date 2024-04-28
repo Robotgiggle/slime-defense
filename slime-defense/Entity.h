@@ -7,7 +7,7 @@ class Scene;
 class Entity {
 public:
     enum MotionType { NONE, TOP_DOWN, SIDE_ON, SIDE_ON_Y, PHYSICS };
-    enum AnimType { MOVING, ALWAYS, CUSTOM, NEVER };
+    enum AnimType { MOVING, ALWAYS, CUSTOM };
     enum { LEFT, RIGHT, UP, DOWN };
 
 private:

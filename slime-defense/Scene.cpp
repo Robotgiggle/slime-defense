@@ -31,6 +31,7 @@ void Scene::initialise() {
 }
 
 void Scene::update(float delta_time) {
+    if (m_timer > 0.0f) m_timer -= delta_time;
     for (int i = 0; i < m_entity_cap; i++) {
         if (m_state.entities[i]) {
             m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);

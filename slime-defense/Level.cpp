@@ -46,6 +46,17 @@ void Level::initialise() {
 	e_game_menu->set_collision(false);
 
 	e_game_menu->m_texture_id = Utility::load_texture("assets/placeholder.png");
+
+	// ————— NEXT-WAVE BUTTON ————— //
+	e_next_button = new Entity(this);
+
+	e_next_button->set_position(glm::vec3(7.5f, 0.25f, 0.0f));
+	e_next_button->set_sprite_scale(glm::vec3(1.6f, 0.8f, 0.0f));
+	e_next_button->set_collision(false);
+
+	e_next_button->m_texture_id = Utility::load_texture("assets/next_button.png");
+	e_next_button->m_animation_indices = new int[3] { 0, 1, 2 };
+	e_next_button->setup_anim(1, 3, 3, 0, 2, 1);
 }
 
 void Level::process_event(SDL_Event event) {
@@ -54,15 +65,25 @@ void Level::process_event(SDL_Event event) {
 	case SDL_MOUSEBUTTONDOWN:
 		// process click triggers
 		if (m_held_item == NONE) {
-			if (Utility::touching_entity(m_global_info->mousePos, e_game_menu, 0) and m_money >= m_turret_cost) {
+			if (Utility::touching_entity(m_global_info->mousePos, e_next_button, 0)) {
+				// if the last wave is done, move to the next level
+				if (m_current_wave == m_wave_count - 1) {
+					m_global_info->changeScenes = true;
+				}
+				// start the next wave
+				if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
+					e_next_button->m_animation_index = 0;
+					m_current_wave++;
+				}
+			} else if (Utility::touching_entity(m_global_info->mousePos, e_game_menu, 0) and m_money >= m_turret_cost) {
 				// show a turret in the cursor
 				m_held_item = TURRET;
 				e_cursor_item->set_position(m_global_info->mousePos);
-			}
+			} 
 		} else {
 			bool validPlacement = true;
 			// check if any of the corners are outside placeable terrain
-			float dzRadius = 0.41f;
+			float dzRadius = 0.44f;
 			glm::vec3 dropZone[4] = {
 				glm::vec3(-dzRadius, -dzRadius, 0.0f), glm::vec3(dzRadius, -dzRadius, 0.0f),
 				glm::vec3(-dzRadius, dzRadius, 0.0f), glm::vec3(dzRadius, dzRadius, 0.0f),
@@ -93,13 +114,20 @@ void Level::process_event(SDL_Event event) {
 		// process keydown triggers
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE:
-			if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) m_current_wave++;
-			break;
+			// next button hotkey
+			if (m_current_wave == m_wave_count - 1) {
+				m_global_info->changeScenes = true;
+			} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
+				e_next_button->m_animation_index = 0;
+				m_current_wave++;
+			}
 		case SDLK_ESCAPE:
+			// cancel turret purchase
 			m_held_item = NONE;
 			e_cursor_item->set_active(false);
 			break;
 		case SDLK_r:
+			// debug level reset
 			this->initialise();
 			break;
 		default:
@@ -190,12 +218,23 @@ void Level::update(float delta_time) {
 						newSlime->set_position(m_spawn_point + offset);
 						wave.bosses--;
 					}
+					// increment slime counter
+					m_slimes_alive++;
+					// activate the next-wave button if necessary, on a short delay
+					if (wave.slimes_left() == 0 and m_current_wave < m_wave_count - 1) {
+						m_timer = 2.5f;
+					}
 					break;
 				}
 			}
 		}
 	}
 	
+	// next-wave button activation
+	if (m_timer > 0.0f and m_timer <= 1.0f) {
+		e_next_button->m_animation_index = 1;
+	}
+
 	Scene::update(delta_time);
 }
 

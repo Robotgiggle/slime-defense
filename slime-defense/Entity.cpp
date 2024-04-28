@@ -142,8 +142,6 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
                 m_animation_index = (m_animation_index + 1) % m_animation_frames;
             }
             break;
-        case NEVER:
-            m_animation_index = 0;
         default:
             break;
         }
