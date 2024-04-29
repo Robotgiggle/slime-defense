@@ -19,8 +19,9 @@ public:
 	Entity*& e_path_end = m_state.entities[0];
 	Entity*& e_cursor_range = m_state.entities[1];
 	Entity*& e_cursor_item = m_state.entities[2];
-	Entity*& e_game_menu = m_state.entities[m_entity_cap-3];
-	Entity*& e_turret_button = m_state.entities[m_entity_cap - 2];
+	Entity*& e_game_menu = m_state.entities[m_entity_cap-4];
+	Entity*& e_gun_turret_button = m_state.entities[m_entity_cap - 3];
+	Entity*& e_aoe_turret_button = m_state.entities[m_entity_cap - 2];
 	Entity*& e_next_button = m_state.entities[m_entity_cap - 1];
 
 	// ————— ATTRIBUTES ————— //
@@ -34,7 +35,7 @@ public:
 	int m_wave_count = 0;
 	int m_current_wave = -1;
 	// turrets
-	enum HeldItem { NONE, TURRET };
+	enum HeldItem { NONE, GUN_TURRET, AOE_TURRET };
 	HeldItem m_held_item;
 	int m_turret_cost = 2;
 	int m_money = 5;

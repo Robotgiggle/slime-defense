@@ -157,7 +157,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		// basic death effects
 		m_level->m_slimes_alive--;
 		m_level->m_money++;
-		if (m_level->m_money >= m_level->m_turret_cost) m_level->e_turret_button->m_animation_index = 0;
 		despawn();
 		return;
 	}

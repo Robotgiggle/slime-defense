@@ -4,15 +4,17 @@
 class TurretEntity : public Entity {
 private:
 	enum AIState { IDLE, TRACKING };
+	enum TurretType { GUN, AOE };
 	AIState m_ai_state = IDLE;
+	TurretType m_turret_type;
 	SlimeEntity* m_target = nullptr;
 	Entity m_range_entity;
-	Entity m_gun_entity;
+	Entity m_head_entity;
 	Level* m_level;
 	float m_range;
 	float m_shot_cooldown = 0.0f;
 public:
-	TurretEntity(Scene* scene);
+	TurretEntity(Scene* scene, bool aoe);
 	~TurretEntity();
 
 	// ————— CUSTOM UPDATE METHOD ————— //

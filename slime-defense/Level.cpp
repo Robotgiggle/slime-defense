@@ -37,8 +37,6 @@ void Level::initialise() {
 	e_cursor_item->set_collision(false);
 	e_cursor_item->set_active(false);
 
-	e_cursor_item->m_texture_id = Utility::load_texture("assets/turret_full.png");
-
 	// ————— HELD ITEM RANGE ————— //
 	e_cursor_range = new Entity(this);
 
@@ -56,16 +54,27 @@ void Level::initialise() {
 
 	e_game_menu->m_texture_id = Utility::load_texture("assets/game_menu.png");
 
-	// ————— TURRET BUTTON ————— //
-	e_turret_button = new Entity(this);
+	// ————— GUN TURRET BUTTON ————— //
+	e_gun_turret_button = new Entity(this);
 
-	e_turret_button->set_position(glm::vec3(7.16f, 3.66f, 0.0f));
-	e_turret_button->set_sprite_scale(glm::vec3(0.85f, 0.85f, 0.0f));
-	e_turret_button->set_collision(false);
+	e_gun_turret_button->set_position(glm::vec3(7.16f, 3.75f, 0.0f));
+	e_gun_turret_button->set_sprite_scale(glm::vec3(0.85f, 0.85f, 0.0f));
+	e_gun_turret_button->set_collision(false);
 
-	e_turret_button->m_texture_id = Utility::load_texture("assets/turret_button.png");
-	e_turret_button->m_animation_indices = new int[2] { 0, 1 };
-	e_turret_button->setup_anim(1, 2, 2, 0, 2);
+	e_gun_turret_button->m_texture_id = Utility::load_texture("assets/gun_turret_button.png");
+	e_gun_turret_button->m_animation_indices = new int[2] { 0, 1 };
+	e_gun_turret_button->setup_anim(1, 2, 2, 0, 2);
+
+	// ————— AOE TURRET BUTTON ————— //
+	e_aoe_turret_button = new Entity(this);
+
+	e_aoe_turret_button->set_position(glm::vec3(7.16f, 2.41f, 0.0f));
+	e_aoe_turret_button->set_sprite_scale(glm::vec3(0.85f, 0.85f, 0.0f));
+	e_aoe_turret_button->set_collision(false);
+
+	e_aoe_turret_button->m_texture_id = Utility::load_texture("assets/aoe_turret_button.png");
+	e_aoe_turret_button->m_animation_indices = new int[2] { 0, 1 };
+	e_aoe_turret_button->setup_anim(1, 2, 2, 0, 2);
 
 	// ————— NEXT-WAVE BUTTON ————— //
 	e_next_button = new Entity(this);
@@ -94,20 +103,23 @@ void Level::process_event(SDL_Event event) {
 					e_next_button->m_animation_index = 2;
 					m_current_wave++;
 				}
-			} else if (Utility::touching_entity(m_global_info->mousePos, e_turret_button, 0) and m_money >= m_turret_cost) {
-				// show a turret in the cursor
-				m_held_item = TURRET;
-				e_cursor_item->set_position(m_global_info->mousePos);
-				e_cursor_range->set_position(m_global_info->mousePos);
+			} else if (Utility::touching_entity(m_global_info->mousePos, e_gun_turret_button, 0) and m_money >= m_turret_cost) {
+				// show a gun turret in the cursor
+				m_held_item = GUN_TURRET;
+				e_cursor_item->m_texture_id = Utility::load_texture("assets/gun_turret_full.png");
 				e_cursor_range->set_sprite_scale(glm::vec3(3.2f, 3.2f, 0.0f));
-			} 
+			} else if (Utility::touching_entity(m_global_info->mousePos, e_aoe_turret_button, 0) and m_money >= m_turret_cost+1) {
+				// show an aoe turret in the cursor
+				m_held_item = AOE_TURRET;
+				e_cursor_item->m_texture_id = Utility::load_texture("assets/aoe_turret_full.png");
+				e_cursor_range->set_sprite_scale(glm::vec3(2.6f, 2.6f, 0.0f));
+			}
 		} else {
 			// if location is valid, spawn a new turret
 			if (check_placement_validity()) {
-				m_money -= m_turret_cost;
-				m_turret_cost = glm::min(++m_turret_cost, 9);
-				if (m_money < m_turret_cost) e_turret_button->m_animation_index = 1;
-				TurretEntity* newTurret = spawn<TurretEntity>(this);
+				bool aoe = m_held_item == AOE_TURRET;
+				m_money -= glm::min(aoe + m_turret_cost++, 9);
+				TurretEntity* newTurret = spawn<TurretEntity>(this,aoe);
 				newTurret->set_position(m_global_info->mousePos);
 			}
 			// hide the cursor item
@@ -154,12 +166,18 @@ void Level::process_input()
 }
 
 void Level::update(float delta_time) {
-	// turn point safety
+	// replace all unused turn points with the path end
 	if (m_turn_points[m_turn_point_count] == glm::vec3(0.0f)) {
 		for (int i = m_turn_point_count; i < 10; i++) {
 			m_turn_points[i] = e_path_end->get_position();
 		}
 	}
+
+	// turret button visibility
+	if (m_money < m_turret_cost) e_gun_turret_button->m_animation_index = 1;
+	else e_gun_turret_button->m_animation_index = 0;
+	if (m_money < m_turret_cost + 1) e_aoe_turret_button->m_animation_index = 1;
+	else e_aoe_turret_button->m_animation_index = 0;
 
 	// held item cursor tracking
 	if (m_held_item != NONE) {
@@ -244,11 +262,15 @@ void Level::render(ShaderProgram* program) {
 	std::string livesDisplay = ((m_lives < 10) ? "%0" : "%") + std::to_string(std::max(0,m_lives));
 	std::string moneyDisplay = ((m_money < 10) ? "$0" : "$") + std::to_string(m_money);
 	std::string slimeDisplay = ((m_slimes_alive < 10) ? "&0" : "&") + std::to_string(m_slimes_alive);
-	std::string turretCost = "$" + std::to_string(m_turret_cost);
+	std::string gunTurretCost = "$" + std::to_string(glm::min(m_turret_cost, 9));
+	std::string aoeTurretCost = "$" + std::to_string(glm::min(m_turret_cost+1, 9));
 	Utility::draw_text(program, m_font_texture_id, livesDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.8f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, slimeDisplay, 0.5f, -0.04f, glm::vec3(7.0f, 1.1f, 0.0f));
-	Utility::draw_text(program, m_font_texture_id, turretCost, 0.35f, -0.03f, glm::vec3(7.81f, 3.66f, 0.0f));
+	Utility::draw_text(program, m_font_texture_id, gunTurretCost, 0.35f, -0.03f, 
+		               e_gun_turret_button->get_position()+glm::vec3(0.65f, 0.0f, 0.0f));
+	Utility::draw_text(program, m_font_texture_id, aoeTurretCost, 0.35f, -0.03f,
+		               e_aoe_turret_button->get_position() + glm::vec3(0.65f, 0.0f, 0.0f));
 
 	if (!check_placement_validity()) program->set_tint(glm::vec3(1.0f, 0.38f, 0.38f));
 	e_cursor_range->render(program);
