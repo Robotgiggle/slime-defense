@@ -6,6 +6,7 @@ private:
 	enum AIState { IDLE, TRACKING };
 	AIState m_ai_state = IDLE;
 	SlimeEntity* m_target = nullptr;
+	Entity m_range_entity;
 	Entity m_gun_entity;
 	Level* m_level;
 	float m_range;

@@ -160,10 +160,13 @@
     <Image Include="assets\base_slime.png" />
     <Image Include="assets\bullet.png" />
     <Image Include="assets\display_font.png" />
+    <Image Include="assets\game_menu.png" />
     <Image Include="assets\next_button.png" />
     <Image Include="assets\placeholder.png" />
+    <Image Include="assets\range_circle.png" />
     <Image Include="assets\tileset.png" />
     <Image Include="assets\turret_base.png" />
+    <Image Include="assets\turret_button.png" />
     <Image Include="assets\turret_full.png" />
     <Image Include="assets\turret_gun.png" />
   </ItemGroup>

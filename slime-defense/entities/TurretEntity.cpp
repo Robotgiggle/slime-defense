@@ -16,13 +16,18 @@
 #include "SlimeEntity.h"
 #include "TurretEntity.h"
 
-TurretEntity::TurretEntity(Scene* scene) : Entity(scene), m_gun_entity(scene) {
+TurretEntity::TurretEntity(Scene* scene) : Entity(scene), m_range_entity(scene), m_gun_entity(scene) {
 	// base setup
 	set_scale(glm::vec3(0.5f, 0.5f, 0.0f));
 	set_sprite_scale(glm::vec3(0.75f, 0.75f, 0.0f));
 	m_texture_id = Utility::load_texture("assets/turret_base.png");
 	m_level = static_cast<Level*>(scene);
 	m_range = 1.6f;
+	// range circle setup
+	m_range_entity.set_position(scene->m_global_info->mousePos);
+	m_range_entity.set_sprite_scale(glm::vec3(m_range*2, m_range*2, 0.0f));
+	m_range_entity.m_texture_id = Utility::load_texture("assets/range_circle.png");
+	m_range_entity.update(0, nullptr, 0, nullptr);
 	// gun setup
 	m_gun_entity.set_position(scene->m_global_info->mousePos);
 	m_gun_entity.set_sprite_scale(glm::vec3(0.75f, 0.75f, 0.0f));
@@ -93,6 +98,9 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 }
 
 void TurretEntity::render(ShaderProgram* program) {
+	if (Utility::touching_entity(m_level->m_global_info->mousePos,this,1) and m_level->m_held_item == Level::NONE) {
+		m_range_entity.render(program);
+	}
 	Entity::render(program);
 	m_gun_entity.render(program);
 }

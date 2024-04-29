@@ -17,10 +17,11 @@ class Level : public Scene {
 public:
 	// ————— CUSTOM ENTITIES ————— //
 	Entity*& e_path_end = m_state.entities[0];
-	Entity*& e_game_menu = m_state.entities[m_entity_cap-4];
-	Entity*& e_turret_button = m_state.entities[m_entity_cap - 3];
-	Entity*& e_next_button = m_state.entities[m_entity_cap - 2];
-	Entity*& e_cursor_item = m_state.entities[m_entity_cap - 1];
+	Entity*& e_cursor_range = m_state.entities[1];
+	Entity*& e_cursor_item = m_state.entities[2];
+	Entity*& e_game_menu = m_state.entities[m_entity_cap-3];
+	Entity*& e_turret_button = m_state.entities[m_entity_cap - 2];
+	Entity*& e_next_button = m_state.entities[m_entity_cap - 1];
 
 	// ————— ATTRIBUTES ————— //
 	// terrain
@@ -49,6 +50,8 @@ public:
 	void process_event(SDL_Event event) override;
 	void update(float delta_time) override;
 	void render(ShaderProgram* program) override;
+
+	bool check_placement_validity();
 
 	Entity* get_player() const override { return nullptr; }
 };

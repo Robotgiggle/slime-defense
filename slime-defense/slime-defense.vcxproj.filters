@@ -106,6 +106,15 @@
     <Image Include="assets\turret_gun.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\game_menu.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\range_circle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\turret_button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\default_jump.wav">

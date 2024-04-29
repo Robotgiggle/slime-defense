@@ -22,6 +22,7 @@ Level::Level(int cap) : Scene(cap) {}
 void Level::initialise() {
 	// ————— BASICS ————— //
 	Scene::initialise();
+	m_unordered_render_start = 3;
 	m_current_wave = -1;
 	m_turret_cost = 2;
 	m_lives = 10;
@@ -37,6 +38,14 @@ void Level::initialise() {
 	e_cursor_item->set_active(false);
 
 	e_cursor_item->m_texture_id = Utility::load_texture("assets/turret_full.png");
+
+	// ————— HELD ITEM RANGE ————— //
+	e_cursor_range = new Entity(this);
+
+	e_cursor_range->set_collision(false);
+	e_cursor_range->set_active(false);
+
+	e_cursor_range->m_texture_id = Utility::load_texture("assets/range_circle.png");
 
 	// ————— GAME MENU ————— //
 	e_game_menu = new Entity(this);
@@ -56,7 +65,7 @@ void Level::initialise() {
 
 	e_turret_button->m_texture_id = Utility::load_texture("assets/turret_button.png");
 	e_turret_button->m_animation_indices = new int[2] { 0, 1 };
-	e_turret_button->setup_anim(1, 2, 2, 0, 2, 1);
+	e_turret_button->setup_anim(1, 2, 2, 0, 2);
 
 	// ————— NEXT-WAVE BUTTON ————— //
 	e_next_button = new Entity(this);
@@ -67,7 +76,7 @@ void Level::initialise() {
 
 	e_next_button->m_texture_id = Utility::load_texture("assets/next_button.png");
 	e_next_button->m_animation_indices = new int[3] { 0, 1, 2 };
-	e_next_button->setup_anim(1, 3, 3, 0, 2, 1);
+	e_next_button->setup_anim(1, 3, 3, 0, 2);
 }
 
 void Level::process_event(SDL_Event event) {
@@ -77,49 +86,34 @@ void Level::process_event(SDL_Event event) {
 		// process click triggers
 		if (m_held_item == NONE) {
 			if (Utility::touching_entity(m_global_info->mousePos, e_next_button, 0)) {
-				// if the last wave is done, move to the next level
 				if (m_current_wave == m_wave_count - 1) {
+					// if the last wave is done, move to the next level
 					m_global_info->changeScenes = true;
-				}
-				// start the next wave
-				if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
-					e_next_button->m_animation_index = 0;
+				} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
+					// otherwise, start the next wave
+					e_next_button->m_animation_index = 2;
 					m_current_wave++;
 				}
 			} else if (Utility::touching_entity(m_global_info->mousePos, e_turret_button, 0) and m_money >= m_turret_cost) {
 				// show a turret in the cursor
 				m_held_item = TURRET;
 				e_cursor_item->set_position(m_global_info->mousePos);
+				e_cursor_range->set_position(m_global_info->mousePos);
+				e_cursor_range->set_sprite_scale(glm::vec3(3.2f, 3.2f, 0.0f));
 			} 
 		} else {
-			bool validPlacement = true;
-			// check if any of the corners are outside placeable terrain
-			float dzRadius = 0.44f;
-			glm::vec3 dropZone[4] = {
-				glm::vec3(-dzRadius, -dzRadius, 0.0f), glm::vec3(dzRadius, -dzRadius, 0.0f),
-				glm::vec3(-dzRadius, dzRadius, 0.0f), glm::vec3(dzRadius, dzRadius, 0.0f),
-			};
-			for (const glm::vec3& corner : dropZone) {
-				if (!m_state.map->is_solid(m_global_info->mousePos + corner)) validPlacement = false;
-			}
-			// check if you're trying to place on another turret
-			for (int i = 0; i < m_entity_cap; i++) {
-				Entity* other = m_state.entities[i];
-				if (!other) continue;
-				if (typeid(*other) != typeid(TurretEntity)) continue;
-				if (e_cursor_item->check_collision(other)) validPlacement = false;
-			}
-			// if placement is still valid, spawn a new turret
-			if (validPlacement) {
+			// if location is valid, spawn a new turret
+			if (check_placement_validity()) {
 				m_money -= m_turret_cost;
 				m_turret_cost = glm::min(++m_turret_cost, 9);
-				if (m_money < m_turret_cost) e_turret_button->m_animation_index = 0;
+				if (m_money < m_turret_cost) e_turret_button->m_animation_index = 1;
 				TurretEntity* newTurret = spawn<TurretEntity>(this);
 				newTurret->set_position(m_global_info->mousePos);
 			}
 			// hide the cursor item
 			m_held_item = NONE;
 			e_cursor_item->set_active(false);
+			e_cursor_range->set_active(false);
 		}
 		
 		break;
@@ -131,13 +125,14 @@ void Level::process_event(SDL_Event event) {
 			if (m_current_wave == m_wave_count - 1) {
 				m_global_info->changeScenes = true;
 			} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
-				e_next_button->m_animation_index = 0;
+				e_next_button->m_animation_index = 2;
 				m_current_wave++;
 			}
 		case SDLK_ESCAPE:
 			// cancel turret purchase
 			m_held_item = NONE;
 			e_cursor_item->set_active(false);
+			e_cursor_range->set_active(false);
 			break;
 		case SDLK_r:
 			// debug level reset
@@ -168,8 +163,10 @@ void Level::update(float delta_time) {
 
 	// held item cursor tracking
 	if (m_held_item != NONE) {
-		e_cursor_item->set_active(true);
 		e_cursor_item->set_position(m_global_info->mousePos);
+		e_cursor_range->set_position(m_global_info->mousePos);
+		e_cursor_item->set_active(true);
+		e_cursor_range->set_active(true);
 	}
 	
 	// slime wave spawning
@@ -252,4 +249,30 @@ void Level::render(ShaderProgram* program) {
 	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, slimeDisplay, 0.5f, -0.04f, glm::vec3(7.0f, 1.1f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, turretCost, 0.35f, -0.03f, glm::vec3(7.81f, 3.66f, 0.0f));
+
+	if (!check_placement_validity()) program->set_tint(glm::vec3(1.0f, 0.38f, 0.38f));
+	e_cursor_range->render(program);
+	program->no_tint();
+	e_cursor_item->render(program);
+}
+
+bool Level::check_placement_validity() {
+	// check if any of the corners are outside placeable terrain
+	float dzRadius = 0.44f;
+	glm::vec3 dropZone[4] = {
+		glm::vec3(-dzRadius, -dzRadius, 0.0f), glm::vec3(dzRadius, -dzRadius, 0.0f),
+		glm::vec3(-dzRadius, dzRadius, 0.0f), glm::vec3(dzRadius, dzRadius, 0.0f),
+	};
+	for (const glm::vec3& corner : dropZone) {
+		if (!m_state.map->is_solid(m_global_info->mousePos + corner)) return false;
+	}
+	// check if you're trying to place on another turret
+	for (int i = 0; i < m_entity_cap; i++) {
+		Entity* other = m_state.entities[i];
+		if (!other) continue;
+		if (typeid(*other) != typeid(TurretEntity)) continue;
+		if (e_cursor_item->check_collision(other)) return false;
+	}
+	// if all checks pass, this spot is valid
+	return true;
 }

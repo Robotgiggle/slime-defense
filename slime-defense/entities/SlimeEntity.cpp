@@ -41,9 +41,9 @@ SlimeEntity::~SlimeEntity() {
 	// if this was the last slime, enable the next-wave or next-level button
 	if (m_level->m_slimes_alive == 0) {
 		if (m_level->m_current_wave == m_level->m_wave_count - 1) {
-			m_level->e_next_button->m_animation_index = 2;
-		} else {
 			m_level->e_next_button->m_animation_index = 1;
+		} else {
+			m_level->e_next_button->m_animation_index = 0;
 		}
 	}
 }
@@ -157,7 +157,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		// basic death effects
 		m_level->m_slimes_alive--;
 		m_level->m_money++;
-		if (m_level->m_money >= m_level->m_turret_cost) m_level->e_turret_button->m_animation_index = 1;
+		if (m_level->m_money >= m_level->m_turret_cost) m_level->e_turret_button->m_animation_index = 0;
 		despawn();
 		return;
 	}
