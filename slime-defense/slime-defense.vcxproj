@@ -137,9 +137,10 @@
     <ClCompile Include="entities\SlimeEntity.cpp" />
     <ClCompile Include="entities\TurretEntity.cpp" />
     <ClCompile Include="Level.cpp" />
-    <ClCompile Include="Level1.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="scenes\Level1.cpp" />
+    <ClCompile Include="scenes\MainMenu.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
@@ -150,9 +151,10 @@
     <ClInclude Include="entities\SlimeEntity.h" />
     <ClInclude Include="entities\TurretEntity.h" />
     <ClInclude Include="Level.h" />
-    <ClInclude Include="Level1.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="scenes\Level1.h" />
+    <ClInclude Include="scenes\MainMenu.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ShaderProgram.h" />
@@ -169,11 +171,12 @@
     <Image Include="assets\gun_head.png" />
     <Image Include="assets\gun_turret_button.png" />
     <Image Include="assets\gun_turret_full.png" />
+    <Image Include="assets\menu_button.png" />
     <Image Include="assets\next_button.png" />
     <Image Include="assets\placeholder.png" />
-    <Image Include="assets\range_circle.png" />
     <Image Include="assets\tileset.png" />
     <Image Include="assets\turret_base.png" />
+    <Image Include="assets\zone_circle.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\default_jump.wav" />

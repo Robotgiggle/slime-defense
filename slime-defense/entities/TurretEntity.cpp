@@ -28,7 +28,7 @@ TurretEntity::TurretEntity(Scene* scene, bool aoe) : Entity(scene), m_range_enti
 	// range circle setup
 	m_range_entity.set_position(scene->m_global_info->mousePos);
 	m_range_entity.set_sprite_scale(glm::vec3(m_range*2, m_range*2, 0.0f));
-	m_range_entity.m_texture_id = Utility::load_texture("assets/range_circle.png");
+	m_range_entity.m_texture_id = Utility::load_texture("assets/zone_circle.png");
 	m_range_entity.update(0, nullptr, 0, nullptr);
 	// head setup
 	m_head_entity.set_position(scene->m_global_info->mousePos);

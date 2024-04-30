@@ -8,13 +8,13 @@
 #include <SDL_mixer.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include "glm/mat4x4.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "ShaderProgram.h"
-#include "Utility.h"
+#include "../glm/mat4x4.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
+#include "../ShaderProgram.h"
+#include "../Utility.h"
+#include "../entities/SlimeEntity.h"
+#include "../entities/TurretEntity.h"
 #include "Level1.h"
-#include "entities/SlimeEntity.h"
-#include "entities/TurretEntity.h"
 
 // terrain map
 const int LV1_WIDTH = 9,
@@ -29,16 +29,6 @@ const int LV1_DATA[] = {
     13,  0, 11, 12, 12, 12, 12,  0,  0,
 };
 
-// sprite filepaths
-const char PLACEHOLDER_FILEPATH[] = "assets/placeholder.png",
-           MAP_TILES_FILEPATH[] = "assets/tileset.png";
-
-// audio filepaths
-const char MUSIC_FILEPATH[] = "assets/default_music.mp3";
-
-// useful constants
-const float ACC_OF_GRAVITY = -4.91f;
-
 // constructor definition
 Level1::Level1(int cap) : Level(cap) {}
 
@@ -46,11 +36,11 @@ Level1::Level1(int cap) : Level(cap) {}
 void Level1::initialise() {
     // ————— BASICS ————— //
     Level::initialise();
-    m_next_scene_id = 1;
+    m_next_scene_id = 2;
 
     // ————— TERRAIN ————— //
-    GLuint map_texture_id = Utility::load_texture(MAP_TILES_FILEPATH);
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 3);
+    GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
+    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
     m_start_dir = 0;
     m_spawn_point = glm::vec3(1.0f, -1.5f, 0.0f);
@@ -76,7 +66,7 @@ void Level1::initialise() {
     // ————— AUDIO ————— //
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-    m_state.bgm = Mix_LoadMUS(MUSIC_FILEPATH);
+    m_state.bgm = Mix_LoadMUS("assets/default_music.mp3");
     //Mix_PlayMusic(m_state.bgm, -1);
     //Mix_VolumeMusic(MIX_MAX_VOLUME / 3);
 

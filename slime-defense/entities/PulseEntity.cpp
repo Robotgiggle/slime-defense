@@ -19,7 +19,7 @@
 
 PulseEntity::PulseEntity(Scene* scene, float radius, float damage, glm::vec3 tint) : Entity(scene) {
 	set_collision(false);
-	m_texture_id = Utility::load_texture("assets/range_circle.png");
+	m_texture_id = Utility::load_texture("assets/zone_circle.png");
 	m_level = static_cast<Level*>(scene);
 	m_tint = tint;
 	m_damage = damage;

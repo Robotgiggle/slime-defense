@@ -44,7 +44,7 @@ void Level::initialise() {
 	e_cursor_range->set_collision(false);
 	e_cursor_range->set_active(false);
 
-	e_cursor_range->m_texture_id = Utility::load_texture("assets/range_circle.png");
+	e_cursor_range->m_texture_id = Utility::load_texture("assets/zone_circle.png");
 
 	// ————— GAME MENU ————— //
 	e_game_menu = new Entity(this);

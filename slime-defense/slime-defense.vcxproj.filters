@@ -30,9 +30,6 @@
     <ClCompile Include="Utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Level1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -46,6 +43,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="entities\PulseEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\Level1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\MainMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,9 +71,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Level1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="entities\SlimeEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="entities\PulseEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\Level1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\MainMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -109,9 +115,6 @@
     <Image Include="assets\game_menu.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\range_circle.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\aoe_head.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -128,6 +131,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\gun_turret_full.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\zone_circle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\menu_button.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

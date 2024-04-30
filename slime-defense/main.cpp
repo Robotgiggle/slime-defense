@@ -13,7 +13,8 @@
 #include "ShaderProgram.h"
 #include "Utility.h"
 #include "Scene.h"
-#include "Level1.h"
+#include "scenes/MainMenu.h"
+#include "scenes/Level1.h"
 
 // ————— CONSTANTS ————— //
 
@@ -48,9 +49,10 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 const float FIXED_TIMESTEP = 0.0166666f;
 
 // scenes
-const int NUM_OF_SCENES = 1;
+const int NUM_OF_SCENES = 2;
 Scene* const ALL_SCENES[] = {
-    new Level1(100)
+    new MainMenu(20),
+    new Level1(100),
 };
 
 // ————— VARIABLES ————— //
