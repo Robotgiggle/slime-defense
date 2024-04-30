@@ -31,13 +31,15 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 	case BASIC: m_tint    = glm::vec3(0.4f, 0.9f, 0.1f); break;
 	case REGEN: m_tint    = glm::vec3(1.0f, 0.35f, 0.35f); break;
 	case SPLIT: m_tint    = glm::vec3(0.05f, 0.6f, 1.0f); break;
-	case ELITE: m_tint = glm::vec3(0.90f, 0.54f, 0.96f); break;
+	case ELITE: m_tint    = glm::vec3(0.90f, 0.54f, 0.96f); break;
 	case BOSS: m_tint     = glm::vec3(1.0f, 0.68f, 0.15f); break;
 	default: m_tint       = glm::vec3(0.65f, 0.65f, 0.65f); break;
 	}
 }
 
 SlimeEntity::~SlimeEntity() {
+	// decrement slime count
+	m_level->m_slimes_alive--;
 	// if this was the last slime, enable the next-wave or next-level button
 	if (m_level->m_slimes_alive == 0) {
 		if (m_level->m_current_wave == m_level->m_wave_count - 1) {
@@ -82,6 +84,13 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		else if (get_position().y > turnPoint.y + 0.5f) move_down();
 	}
 
+	// check for path end
+	if (check_collision(m_level->e_path_end)) {
+		m_level->m_lives -= 1;
+		despawn();
+		return;
+	}
+
 	// turning logic
 	if (abs(get_position().x - turnPoint.x) <= 0.5 and abs(get_position().y - turnPoint.y) <= 0.5) {
 		// calculate the corner to turn around
@@ -98,25 +107,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	}
 	if (m_turn_cooldown > 0) m_turn_cooldown -= delta_time;
 
-	// health scaling
-	float healthFactor = (m_health / 10.0f + 0.5f);
-	set_scale(glm::vec3(0.36f, 0.48f, 0.0f) * healthFactor);
-	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f) * healthFactor);
-
-	// movment animation
-	set_sprite_height(get_sprite_height() * (1 + 0.08f * sin(m_squish_factor)));
-	m_squish_factor += 8.5f * delta_time;
-	if (m_squish_factor >= 360.0f) m_squish_factor -= 360.0f;
-
-	// check for path end
-	if (check_collision(m_level->e_path_end)) {
-		m_level->m_slimes_alive--;
-		m_level->m_lives -= 1;
-		despawn();
-		return;
-	}
-
-	// check other collisions
+	// check for bullet collision
 	for (int i = 0; i < m_level->m_entity_cap; i++) {
 		Entity* other = m_level->m_state.entities[i];
 		if (!other) continue;
@@ -155,7 +146,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 			}
 		}
 		// basic death effects
-		m_level->m_slimes_alive--;
 		m_level->m_money++;
 		despawn();
 		return;
@@ -163,9 +153,19 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// health regeneration
 	if (m_slime_type != BASIC and m_slime_type != SPLIT and m_health < m_max_health) {
-		if (m_slime_type == BOSS) m_health += 0.03f;
+		if (m_slime_type == BOSS) m_health += 0.04f;
 		else m_health += 0.005f;
 	}
+
+	// adjust size based on health
+	float healthFactor = (m_health / 10.0f + 0.5f);
+	set_scale(glm::vec3(0.36f, 0.48f, 0.0f)* healthFactor);
+	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f)* healthFactor);
+
+	// movment animation
+	set_sprite_height(get_sprite_height()* (1 + 0.08f * sin(m_squish_factor)));
+	m_squish_factor += 8.5f * delta_time;
+	if (m_squish_factor >= 360.0f) m_squish_factor -= 360.0f;
 
 	Entity::update(delta_time, collidable_entities, collidable_entity_count, map);
 }

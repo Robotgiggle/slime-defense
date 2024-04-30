@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="entities\PulseEntity.cpp" />
     <ClCompile Include="entities\SlimeEntity.cpp" />
     <ClCompile Include="entities\TurretEntity.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="entities\PulseEntity.h" />
     <ClInclude Include="entities\SlimeEntity.h" />
     <ClInclude Include="entities\TurretEntity.h" />
     <ClInclude Include="Level.h" />
@@ -157,18 +159,21 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\aoe_head.png" />
+    <Image Include="assets\aoe_turret_button.png" />
+    <Image Include="assets\aoe_turret_full.png" />
     <Image Include="assets\base_slime.png" />
     <Image Include="assets\bullet.png" />
     <Image Include="assets\display_font.png" />
     <Image Include="assets\game_menu.png" />
+    <Image Include="assets\gun_head.png" />
+    <Image Include="assets\gun_turret_button.png" />
+    <Image Include="assets\gun_turret_full.png" />
     <Image Include="assets\next_button.png" />
     <Image Include="assets\placeholder.png" />
     <Image Include="assets\range_circle.png" />
     <Image Include="assets\tileset.png" />
     <Image Include="assets\turret_base.png" />
-    <Image Include="assets\turret_button.png" />
-    <Image Include="assets\turret_full.png" />
-    <Image Include="assets\turret_gun.png" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\default_jump.wav" />

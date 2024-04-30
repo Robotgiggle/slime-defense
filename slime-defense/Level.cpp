@@ -24,6 +24,7 @@ void Level::initialise() {
 	Scene::initialise();
 	m_unordered_render_start = 3;
 	m_current_wave = -1;
+	m_slimes_alive = 0;
 	m_turret_cost = 2;
 	m_lives = 10;
 	m_money = 5;
@@ -108,7 +109,7 @@ void Level::process_event(SDL_Event event) {
 				m_held_item = GUN_TURRET;
 				e_cursor_item->m_texture_id = Utility::load_texture("assets/gun_turret_full.png");
 				e_cursor_range->set_sprite_scale(glm::vec3(3.2f, 3.2f, 0.0f));
-			} else if (Utility::touching_entity(m_global_info->mousePos, e_aoe_turret_button, 0) and m_money >= m_turret_cost+1) {
+			} else if (Utility::touching_entity(m_global_info->mousePos, e_aoe_turret_button, 0) and m_money >= glm::min(9,m_turret_cost+1)) {
 				// show an aoe turret in the cursor
 				m_held_item = AOE_TURRET;
 				e_cursor_item->m_texture_id = Utility::load_texture("assets/aoe_turret_full.png");
@@ -118,7 +119,8 @@ void Level::process_event(SDL_Event event) {
 			// if location is valid, spawn a new turret
 			if (check_placement_validity()) {
 				bool aoe = m_held_item == AOE_TURRET;
-				m_money -= glm::min(aoe + m_turret_cost++, 9);
+				m_money -= m_turret_cost;
+				m_turret_cost = glm::min(++m_turret_cost, 9);
 				TurretEntity* newTurret = spawn<TurretEntity>(this,aoe);
 				newTurret->set_position(m_global_info->mousePos);
 			}
@@ -176,7 +178,7 @@ void Level::update(float delta_time) {
 	// turret button visibility
 	if (m_money < m_turret_cost) e_gun_turret_button->m_animation_index = 1;
 	else e_gun_turret_button->m_animation_index = 0;
-	if (m_money < m_turret_cost + 1) e_aoe_turret_button->m_animation_index = 1;
+	if (m_money < glm::min(9,m_turret_cost+1)) e_aoe_turret_button->m_animation_index = 1;
 	else e_aoe_turret_button->m_animation_index = 0;
 
 	// held item cursor tracking
@@ -242,7 +244,7 @@ void Level::update(float delta_time) {
 						wave.elites--;
 					}
 					else {
-						if (!wave.bosses) continue;
+						if (!wave.bosses or m_slimes_alive < 5) continue;
 						newSlime = spawn<SlimeEntity>(this, 4, 12.0f, m_start_dir);
 						newSlime->set_position(m_spawn_point + offset);
 						wave.bosses--;
@@ -262,8 +264,8 @@ void Level::render(ShaderProgram* program) {
 	std::string livesDisplay = ((m_lives < 10) ? "%0" : "%") + std::to_string(std::max(0,m_lives));
 	std::string moneyDisplay = ((m_money < 10) ? "$0" : "$") + std::to_string(m_money);
 	std::string slimeDisplay = ((m_slimes_alive < 10) ? "&0" : "&") + std::to_string(m_slimes_alive);
-	std::string gunTurretCost = "$" + std::to_string(glm::min(m_turret_cost, 9));
-	std::string aoeTurretCost = "$" + std::to_string(glm::min(m_turret_cost+1, 9));
+	std::string gunTurretCost = "$" + std::to_string(m_turret_cost);
+	std::string aoeTurretCost = "$" + std::to_string(glm::min(9,m_turret_cost+1));
 	Utility::draw_text(program, m_font_texture_id, livesDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.8f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, moneyDisplay, 0.5f, -0.04f, glm::vec3(7.05f, 5.0f, 0.0f));
 	Utility::draw_text(program, m_font_texture_id, slimeDisplay, 0.5f, -0.04f, glm::vec3(7.0f, 1.1f, 0.0f));

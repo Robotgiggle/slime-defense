@@ -45,6 +45,9 @@
     <ClCompile Include="entities\TurretEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="entities\PulseEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -77,6 +80,9 @@
     <ClInclude Include="entities\TurretEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="entities\PulseEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\base_slime.png">
@@ -100,19 +106,28 @@
     <Image Include="assets\turret_base.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\turret_full.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\turret_gun.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\game_menu.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\range_circle.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\turret_button.png">
+    <Image Include="assets\aoe_head.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\aoe_turret_button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\aoe_turret_full.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\gun_head.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\gun_turret_button.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\gun_turret_full.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

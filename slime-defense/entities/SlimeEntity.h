@@ -29,6 +29,9 @@ public:
 	void update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map) override;
 	void render(ShaderProgram* program) override;
 
+	// ————— OTHER METHODS ————— //
+	void change_health(float amount) { m_health += amount; };
+
 	// ————— GETTERS ————— //
 	AIState   const get_ai_state()    const { return m_ai_state; };
 	Level*    const get_level()       const { return m_level; };
@@ -36,5 +39,5 @@ public:
 	int       const get_goal_index()  const { return m_target_point_index; };
 
 	// ————— SETTERS ————— //
-	void const set_ai_state(AIState new_state) { m_ai_state = new_state; };
+	void const set_ai_state(AIState new_state) { m_ai_state = new_state; }
 };

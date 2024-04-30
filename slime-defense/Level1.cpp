@@ -71,10 +71,7 @@ void Level1::initialise() {
     e_path_end = new Entity(this);
 
     e_path_end->set_position(glm::vec3(7.3f, 2.0f, 0.0f));
-    e_path_end->set_scale(glm::vec3(0.4f, 1.0f, 0.0f));
-    e_path_end->set_sprite_scale(glm::vec3(0.4f, 1.0f, 0.0f));
-
-    e_path_end->m_texture_id = Utility::load_texture(PLACEHOLDER_FILEPATH);
+    e_path_end->set_scale(glm::vec3(0.4f, 2.0f, 0.0f));
 
     // ————— AUDIO ————— //
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);

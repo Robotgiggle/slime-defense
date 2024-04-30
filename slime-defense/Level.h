@@ -28,20 +28,20 @@ public:
 	// terrain
 	glm::vec3 m_spawn_point = glm::vec3(0.0f);
 	glm::vec3 m_turn_points[10] = { glm::vec3(0.0f) };
-	int m_turn_point_count = 0;
-	int m_start_dir = 0;
+	int m_turn_point_count;
+	int m_start_dir;
 	// waves
 	SlimeWave m_waves[10] = { SlimeWave() };
-	int m_wave_count = 0;
-	int m_current_wave = -1;
+	int m_wave_count;
+	int m_current_wave;
 	// turrets
 	enum HeldItem { NONE, GUN_TURRET, AOE_TURRET };
 	HeldItem m_held_item;
-	int m_turret_cost = 2;
-	int m_money = 5;
+	int m_turret_cost;
+	int m_money;
 	// other
-	int m_slimes_alive = 0;
-	int m_lives = 10;
+	int m_slimes_alive;
+	int m_lives;
 	
 	// ————— METHODS ————— //
 	Level(int cap);

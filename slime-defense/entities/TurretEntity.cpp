@@ -13,6 +13,7 @@
 #include "../ShaderProgram.h"
 #include "../Level.h"
 #include "../Utility.h"
+#include "PulseEntity.h"
 #include "SlimeEntity.h"
 #include "TurretEntity.h"
 
@@ -61,6 +62,7 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 				}
 			}
 		}
+		// stop rotating if no targets found
 		if (!m_target) m_head_entity.set_rotation(0);
 		break; }
 	case TRACKING: {
@@ -69,14 +71,21 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 			m_target = nullptr;
 			m_ai_state = IDLE;
 		} else if (m_turret_type == AOE) {
+			// rotate turret head
 			m_head_entity.set_rotation(1);
+			// if cooldown is done, aoe attack
+			if (m_shot_cooldown <= 0.0f) {
+				Entity* pulse = m_level->spawn<PulseEntity>(m_level, m_range, 1.0f, glm::vec3(1.3f, 0.9f, 0.9f));
+				pulse->set_position(get_position());
+				m_shot_cooldown = 1.5f;
+			}
 		} else {
 			// aim at target entity
 			float rangeFactor = glm::distance(get_position(), m_target->get_position()) / m_range;
 			glm::vec3 predictedPos = m_target->get_position() + m_target->get_velocity() * rangeFactor * 0.3f;
 			glm::vec3 targetDir = glm::normalize(predictedPos - get_position());
 			m_head_entity.set_angle(glm::degrees(atan2(targetDir.y, targetDir.x)));
-			// if cooldown is done, shoot
+			// if cooldown is done, shoot a bullet
 			if (m_shot_cooldown <= 0.0f) {
 				Entity* bullet = m_level->spawn<Entity>(m_level);
 				bullet->set_lifetime(1.0f);
