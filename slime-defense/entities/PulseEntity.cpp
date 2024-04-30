@@ -8,6 +8,7 @@
 #define GL_GLEXT_PROTOTYPES 1
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <vector>
 #include "../glm/mat4x4.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
@@ -33,15 +34,19 @@ void PulseEntity::update(float delta_time, Entity* collidable_entities, int coll
 	switch (m_ai_state) {
 	case GROW:
 		m_current_radius += 4.3f * delta_time;
-		if (m_current_radius >= m_max_radius) {
-			for (int i = 0; i < m_level->m_entity_cap; i++) {
-				Entity* other = m_level->m_state.entities[i];
-				if (!other) continue;
-				if (typeid(*other) == typeid(SlimeEntity) and glm::distance(get_position(), other->get_position()) <= m_max_radius+0.1f) {
-					SlimeEntity* slime = static_cast<SlimeEntity*>(other);
-					slime->change_health(-m_damage);
-				}
+		for (int i = 0; i < m_level->m_entity_cap; i++) {
+			Entity* other = m_level->m_state.entities[i];
+			if (!other) continue;
+			if (typeid(*other) != typeid(SlimeEntity)) continue;
+			SlimeEntity* slime = static_cast<SlimeEntity*>(other);
+			// if the slime is in range and hasn't been damaged yet, damage it
+			if (glm::distance(get_position(), other->get_position()) <= m_current_radius
+				and std::find(m_damaged.begin(),m_damaged.end(),slime) == m_damaged.end()) {
+				slime->change_health(-m_damage);
+				m_damaged.push_back(slime);
 			}
+		}
+		if (m_current_radius >= m_max_radius) {
 			m_ai_state = SHRINK;
 		}
 		break;

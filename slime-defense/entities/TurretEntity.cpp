@@ -13,8 +13,8 @@
 #include "../ShaderProgram.h"
 #include "../Level.h"
 #include "../Utility.h"
-#include "PulseEntity.h"
 #include "SlimeEntity.h"
+#include "PulseEntity.h"
 #include "TurretEntity.h"
 
 TurretEntity::TurretEntity(Scene* scene, bool aoe) : Entity(scene), m_range_entity(scene), m_head_entity(scene) {

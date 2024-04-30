@@ -5,6 +5,7 @@ class PulseEntity : public Entity {
 private:
 	enum AIState { GROW, SHRINK };
 	AIState m_ai_state = GROW;
+	std::vector<SlimeEntity*> m_damaged;
 	glm::vec3 m_tint;
 	Level* m_level;
 	float m_damage;
