@@ -106,9 +106,6 @@
     <Image Include="assets\base_slime.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="assets\placeholder.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\tileset.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -153,12 +150,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="assets\default_jump.wav">
-      <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="assets\default_music.mp3" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="SDL2.dll" />
     <None Include="SDL2_mixer.dll" />
     <None Include="smpeg2.dll" />
@@ -168,5 +159,20 @@
     <None Include="shaders\vertex.glsl" />
     <None Include="shaders\vertex_textured.glsl" />
     <None Include="shaders\tinted_fragment_textured.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\audio\bg_music.mp3" />
+    <Media Include="assets\audio\click.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\audio\click2.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\audio\life_lost.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="assets\audio\pop.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

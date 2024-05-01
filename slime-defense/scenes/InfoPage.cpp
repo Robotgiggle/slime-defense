@@ -42,7 +42,7 @@ void InfoPage::initialise() {
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
+    m_map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
     // ————— INFO BUTTON ————— //
     e_back_button = new Entity(this);
@@ -51,7 +51,7 @@ void InfoPage::initialise() {
     e_back_button->set_sprite_scale(glm::vec3(3.0f, 1.0f, 0.0f));
     e_back_button->m_texture_id = Utility::load_texture("assets/menu_button.png");
 
-    e_back_button->update(0.0f, NULL, 0, m_state.map);
+    e_back_button->update(0.0f, NULL, 0, m_map);
 
     // ————— FAKE SLIMES ————— //
     glm::vec3 slimePositions[5] = {
@@ -74,6 +74,7 @@ void InfoPage::process_event(SDL_Event event) {
     switch (event.type) {
     case SDL_MOUSEBUTTONDOWN:
         if (Utility::touching_entity(m_global_info->mousePos, e_back_button, 0)) {
+            Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
             m_global_info->changeScenes = true;
         }
         break;
@@ -93,11 +94,11 @@ void InfoPage::update(float delta_time) {
 void InfoPage::render(ShaderProgram* program) {
     Scene::render(program);
 
-    m_state.entities[0]->render_tinted(program, glm::vec3(0.4f, 0.9f, 0.1f));
-    m_state.entities[1]->render_tinted(program, glm::vec3(1.0f, 0.35f, 0.35f));
-    m_state.entities[2]->render_tinted(program, glm::vec3(0.05f, 0.6f, 1.0f));
-    m_state.entities[3]->render_tinted(program, glm::vec3(0.90f, 0.54f, 0.96f));
-    m_state.entities[4]->render_tinted(program, glm::vec3(1.0f, 0.68f, 0.15f));
+    m_entities[0]->render_tinted(program, glm::vec3(0.4f, 0.9f, 0.1f));
+    m_entities[1]->render_tinted(program, glm::vec3(1.0f, 0.35f, 0.35f));
+    m_entities[2]->render_tinted(program, glm::vec3(0.05f, 0.6f, 1.0f));
+    m_entities[3]->render_tinted(program, glm::vec3(0.90f, 0.54f, 0.96f));
+    m_entities[4]->render_tinted(program, glm::vec3(1.0f, 0.68f, 0.15f));
 
     std::string lines[6] = {
         "PREVENT THE SLIMES FROM",

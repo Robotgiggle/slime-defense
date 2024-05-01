@@ -42,7 +42,7 @@ void MainMenu::initialise() {
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
+    m_map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
     // ————— PLAY BUTTON ————— //
     e_play_button = new Entity(this);
@@ -51,7 +51,7 @@ void MainMenu::initialise() {
     e_play_button->set_sprite_scale(glm::vec3(3.9f, 1.3f, 0.0f));
     e_play_button->m_texture_id = Utility::load_texture("assets/menu_button.png");
 
-    e_play_button->update(0.0f, NULL, 0, m_state.map);
+    e_play_button->update(0.0f, NULL, 0, m_map);
 
     // ————— INFO BUTTON ————— //
     e_info_button = new Entity(this);
@@ -60,7 +60,7 @@ void MainMenu::initialise() {
     e_info_button->set_sprite_scale(glm::vec3(3.9f, 1.3f, 0.0f));
     e_info_button->m_texture_id = Utility::load_texture("assets/menu_button.png");
 
-    e_info_button->update(0.0f, NULL, 0, m_state.map);
+    e_info_button->update(0.0f, NULL, 0, m_map);
 
     // ————— FAKE SLIMES ————— //
     for (int i = 0; i < 16; i++) {
@@ -85,8 +85,10 @@ void MainMenu::process_event(SDL_Event event) {
     switch (event.type) {
     case SDL_MOUSEBUTTONDOWN:
         if (Utility::touching_entity(m_global_info->mousePos, e_play_button, 0)) {
+            Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
             m_global_info->changeScenes = true;
         } else if (Utility::touching_entity(m_global_info->mousePos, e_info_button, 0)) {
+            Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
             m_next_scene_id = 1;
             m_global_info->changeScenes = true;
         }
@@ -102,7 +104,7 @@ void MainMenu::process_input() {
 
 void MainMenu::update(float delta_time) {
     for (int i = 0; i < 16; i++) {
-        Entity* fakeSlime = m_state.entities[i];
+        Entity* fakeSlime = m_entities[i];
         glm::vec3 pos = fakeSlime->get_position();
 
         float xOffset = (rand() % 11 - 5) / 20.0f;
@@ -132,7 +134,7 @@ void MainMenu::render(ShaderProgram* program) {
 
     program->set_tint(glm::vec3(0.4f, 0.9f, 0.1f));
     for (int i = 0; i < 16; i++) {
-        m_state.entities[i]->render(program);
+        m_entities[i]->render(program);
     }
     program->no_tint();
 

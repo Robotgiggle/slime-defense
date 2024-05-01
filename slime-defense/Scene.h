@@ -6,23 +6,15 @@
 struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
+    bool playerDied = false;
     bool gamePaused = false;
     int slimesKilled = 0;
     int livesLost = 0;
     glm::vec3 mousePos;
-};
-
-struct GameState {
-    GameState(int cap) { entities = new Entity * [cap] {}; }
-
-    Entity** entities;
-    Map* map;
-
-    Mix_Music* bgm;
-    Mix_Chunk* jumpSfx;
-    Mix_Chunk* coinSfx;
-    Mix_Chunk* stompSfx;
-    Mix_Chunk* deathSfx;
+    Mix_Chunk* clickSfx;
+    Mix_Chunk* placeSfx;
+    Mix_Chunk* ouchSfx;
+    Mix_Chunk* killSfx;
 };
 
 class Scene {
@@ -31,9 +23,10 @@ protected:
     Scene(int cap);
 public:
     // ————— ATTRIBUTES ————— //
-    GameState m_state;
-    GlobalInfo* m_global_info;
     GLuint m_font_texture_id;
+    GlobalInfo* m_global_info;
+    Entity** m_entities;
+    Map* m_map;
     const int m_entity_cap;
     int m_next_scene_id;
     int m_unordered_render_start = 0;
@@ -51,10 +44,10 @@ public:
     template <class EntityType, class... SpawnArgs>
     EntityType* spawn(Scene* scene, SpawnArgs... args) {
         for (int i = 0; i < m_entity_cap; i++) {
-            if (m_state.entities[i]) continue;
+            if (m_entities[i]) continue;
             EntityType* newEntity = new EntityType(scene, args...);
             newEntity->set_array_index(i);
-            m_state.entities[i] = newEntity;
+            m_entities[i] = newEntity;
             return newEntity;
         }
         std::cout << "Spawn failed, cap of " << m_entity_cap << " entities is full!" << std::endl;
@@ -62,6 +55,5 @@ public:
     }
 
     // ————— GETTERS ————— //
-    GameState const get_state() const { return m_state; }
     virtual Entity* get_player() const = 0;
 };

@@ -84,8 +84,16 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		else if (get_position().y > turnPoint.y + 0.5f) move_down();
 	}
 
+	// out-of-bounds failsafe
+	if (glm::distance(get_position(),glm::vec3(4.0f,3.0f,0.0f)) > 6.0f) {
+		LOG("WARNING - slime out of bounds");
+		despawn();
+		return;
+	}
+
 	// check for path end
 	if (check_collision(m_level->e_path_end)) {
+		Mix_PlayChannel(-1, m_level->m_global_info->ouchSfx, 0);
 		int damage = (m_slime_type == BOSS) ? 10 : 1;
 		m_level->m_global_info->livesLost += damage;
 		m_level->m_lives -= damage;
@@ -111,7 +119,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for bullet collision
 	for (int i = 0; i < m_level->m_entity_cap; i++) {
-		Entity* other = m_level->m_state.entities[i];
+		Entity* other = m_level->m_entities[i];
 		if (!other) continue;
 
 		if (check_collision(other) and typeid(*other) != typeid(SlimeEntity) and glm::length(other->get_movement()) > 0) {
@@ -132,7 +140,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 				while (true) {
 					// find a valid location within 0.3 units of the parent
 					spawnPos = get_position() + glm::vec3((rand() % 10 - 5) / 17.0f, (rand() % 10 - 5) / 17.0f, 0.0f);
-					if (m_level->m_state.map->is_solid(spawnPos)) continue;
+					if (m_level->m_map->is_solid(spawnPos)) continue;
 					break;
 				}
 				if (elite) {
@@ -148,6 +156,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 			}
 		}
 		// basic death effects
+		Mix_PlayChannel(-1, m_level->m_global_info->killSfx, 0);
 		m_level->m_global_info->slimesKilled++;
 		m_level->m_money++;
 		despawn();

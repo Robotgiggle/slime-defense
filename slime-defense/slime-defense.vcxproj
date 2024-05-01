@@ -177,14 +177,9 @@
     <Image Include="assets\gun_turret_full.png" />
     <Image Include="assets\menu_button.png" />
     <Image Include="assets\next_button.png" />
-    <Image Include="assets\placeholder.png" />
     <Image Include="assets\tileset.png" />
     <Image Include="assets\turret_base.png" />
     <Image Include="assets\zone_circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="assets\default_jump.wav" />
-    <Media Include="assets\default_music.mp3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glew32.dll" />
@@ -196,6 +191,13 @@
     <None Include="shaders\vertex.glsl" />
     <None Include="shaders\vertex_textured.glsl" />
     <None Include="smpeg2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="assets\audio\bg_music.mp3" />
+    <Media Include="assets\audio\click.wav" />
+    <Media Include="assets\audio\click2.wav" />
+    <Media Include="assets\audio\life_lost.wav" />
+    <Media Include="assets\audio\pop.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

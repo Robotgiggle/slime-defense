@@ -95,6 +95,7 @@ void Level::process_event(SDL_Event event) {
 		// process click triggers
 		if (m_held_item == NONE) {
 			if (Utility::touching_entity(m_global_info->mousePos, e_next_button, 0)) {
+				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 				if (m_current_wave == m_wave_count - 1) {
 					// if the last wave is done, move to the next level
 					m_global_info->changeScenes = true;
@@ -104,12 +105,14 @@ void Level::process_event(SDL_Event event) {
 					m_current_wave++;
 				}
 			} else if (Utility::touching_entity(m_global_info->mousePos, e_gun_turret_button, 0) and m_money >= m_turret_cost) {
-				// show a gun turret in the cursor
+				// select a gun turret
+				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 				m_held_item = GUN_TURRET;
 				e_cursor_item->m_texture_id = Utility::load_texture("assets/gun_turret_full.png");
 				e_cursor_range->set_sprite_scale(glm::vec3(3.2f, 3.2f, 0.0f));
 			} else if (Utility::touching_entity(m_global_info->mousePos, e_aoe_turret_button, 0) and m_money >= glm::min(9,m_turret_cost+1)) {
-				// show an aoe turret in the cursor
+				// select an aoe turret
+				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 				m_held_item = AOE_TURRET;
 				e_cursor_item->m_texture_id = Utility::load_texture("assets/aoe_turret_full.png");
 				e_cursor_range->set_sprite_scale(glm::vec3(2.6f, 2.6f, 0.0f));
@@ -117,6 +120,7 @@ void Level::process_event(SDL_Event event) {
 		} else {
 			// if location is valid, spawn a new turret
 			if (check_placement_validity()) {
+				Mix_PlayChannel(-1, m_global_info->placeSfx, 0);
 				bool aoe = m_held_item == AOE_TURRET;
 				m_money -= m_turret_cost;
 				m_turret_cost = glm::min(++m_turret_cost, 9);
@@ -135,6 +139,7 @@ void Level::process_event(SDL_Event event) {
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE:
 			// next button hotkey
+			Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 			if (m_current_wave == m_wave_count - 1) {
 				m_global_info->changeScenes = true;
 			} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
@@ -176,7 +181,8 @@ void Level::update(float delta_time) {
 
 	// check for zero lives
 	if (m_lives <= 0) {
-		m_next_scene_id = 3;
+		m_next_scene_id = 3; // CHANGE THIS ONCE DEATH SCREEN ISN'T SCENE 3 ANYMORE
+		m_global_info->playerDied = true;
 		m_global_info->changeScenes = true;
 	}
 
@@ -200,7 +206,7 @@ void Level::update(float delta_time) {
 		int spawnDensity = 0;
 		std::vector<Entity*> slimes;
 		for (int i = 0; i < m_entity_cap; i++) {
-			Entity* entity = m_state.entities[i];
+			Entity* entity = m_entities[i];
 			if (!entity) continue;
 			if (typeid(*entity) != typeid(SlimeEntity)) continue;
 			if (glm::distance(entity->get_position(), m_spawn_point) <= 0.8f) {
@@ -293,11 +299,11 @@ bool Level::check_placement_validity() {
 		glm::vec3(-dzRadius, dzRadius, 0.0f), glm::vec3(dzRadius, dzRadius, 0.0f),
 	};
 	for (const glm::vec3& corner : dropZone) {
-		if (!m_state.map->is_solid(m_global_info->mousePos + corner)) return false;
+		if (!m_map->is_solid(m_global_info->mousePos + corner)) return false;
 	}
 	// check if you're trying to place on another turret
 	for (int i = 0; i < m_entity_cap; i++) {
-		Entity* other = m_state.entities[i];
+		Entity* other = m_entities[i];
 		if (!other) continue;
 		if (typeid(*other) != typeid(TurretEntity)) continue;
 		if (e_cursor_item->check_collision(other)) return false;

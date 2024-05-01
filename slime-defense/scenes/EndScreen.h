@@ -4,13 +4,10 @@
 class EndScreen : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_exit_button = m_state.entities[0];
-
-    // ————— ATTRIBUTES ————— //
-    bool m_win;
+    Entity*& e_exit_button = m_entities[0];
 
     // ————— METHODS ————— //
-    EndScreen(int cap, bool win);
+    EndScreen(int cap);
 
     void initialise() override;
     void process_input() override;

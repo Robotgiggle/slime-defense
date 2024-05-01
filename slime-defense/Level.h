@@ -16,13 +16,13 @@ struct SlimeWave {
 class Level : public Scene {
 public:
 	// ————— CUSTOM ENTITIES ————— //
-	Entity*& e_path_end = m_state.entities[0];
-	Entity*& e_cursor_range = m_state.entities[1];
-	Entity*& e_cursor_item = m_state.entities[2];
-	Entity*& e_game_menu = m_state.entities[m_entity_cap-4];
-	Entity*& e_gun_turret_button = m_state.entities[m_entity_cap - 3];
-	Entity*& e_aoe_turret_button = m_state.entities[m_entity_cap - 2];
-	Entity*& e_next_button = m_state.entities[m_entity_cap - 1];
+	Entity*& e_path_end = m_entities[0];
+	Entity*& e_cursor_range = m_entities[1];
+	Entity*& e_cursor_item = m_entities[2];
+	Entity*& e_game_menu = m_entities[m_entity_cap-4];
+	Entity*& e_gun_turret_button = m_entities[m_entity_cap - 3];
+	Entity*& e_aoe_turret_button = m_entities[m_entity_cap - 2];
+	Entity*& e_next_button = m_entities[m_entity_cap - 1];
 
 	// ————— ATTRIBUTES ————— //
 	// terrain

@@ -51,15 +51,14 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 const float FIXED_TIMESTEP = 0.0166666f;
 
 // scenes
-const int NUM_OF_SCENES = 5;
+const int NUM_OF_SCENES = 4;
 Scene* const ALL_SCENES[] = {
     new MainMenu(20),
     new InfoPage(20),
     new Level1(100),
     //  Level2
     //  Level3
-    new EndScreen(20,false),
-    new EndScreen(20,true),
+    new EndScreen(20)
 };
 
 // ————— VARIABLES ————— //
@@ -68,6 +67,7 @@ Scene* const ALL_SCENES[] = {
 SDL_Window* g_displayWindow;
 ShaderProgram g_shaderProgram;
 glm::mat4 g_viewMatrix, g_projectionMatrix;
+Mix_Music* g_backgroundMusic;
 Scene* g_currentScene;
 
 // global values visible to scenes (defined in Scene.h)
@@ -114,6 +114,20 @@ void initialise()
 
     glClearColor(BG_RED, BG_BLUE, BG_GREEN, BG_OPACITY);
 
+    // start up background music
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+    g_backgroundMusic = Mix_LoadMUS("assets/audio/bg_music.mp3");
+    Mix_PlayMusic(g_backgroundMusic, -1);
+    Mix_VolumeMusic(40);
+
+    // set up sound effects
+    g_globalInfo.clickSfx = Mix_LoadWAV("assets/audio/click.wav");
+    g_globalInfo.placeSfx = Mix_LoadWAV("assets/audio/click2.wav");
+    g_globalInfo.ouchSfx = Mix_LoadWAV("assets/audio/life_lost.wav");
+    g_globalInfo.killSfx = Mix_LoadWAV("assets/audio/pop.wav");
+    Mix_Volume(-1, 75);
+
+    // configure scenes and start up the first one
     for (Scene* scene : ALL_SCENES) scene->m_global_info = &g_globalInfo;
     startup_scene(0);
 
@@ -182,6 +196,10 @@ void render()
 }
 
 void shutdown() { 
+    Mix_FreeChunk(g_globalInfo.clickSfx);
+    Mix_FreeChunk(g_globalInfo.killSfx);
+    Mix_FreeChunk(g_globalInfo.ouchSfx);
+    Mix_FreeMusic(g_backgroundMusic);
     SDL_Quit();
     for (int i = 0; i < NUM_OF_SCENES; i++) delete ALL_SCENES[i];
 }

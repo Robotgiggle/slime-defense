@@ -4,7 +4,7 @@
 class InfoPage : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_back_button = m_state.entities[5];
+    Entity*& e_back_button = m_entities[5];
 
     // ————— METHODS ————— //
     InfoPage(int cap);

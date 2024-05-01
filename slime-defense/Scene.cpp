@@ -13,37 +13,35 @@
 #include "Utility.h"
 #include "Scene.h"
 
-Scene::Scene(int cap) : m_state(cap), m_entity_cap(cap) {}
+Scene::Scene(int cap) : m_entities(new Entity*[cap]{}), m_entity_cap(cap) {}
 
 Scene::~Scene() {
-    for (int i = 0; i < m_entity_cap; i++) delete m_state.entities[i];
-    delete[] m_state.entities;
-    delete m_state.map;
-    Mix_FreeChunk(m_state.jumpSfx);
-    Mix_FreeMusic(m_state.bgm);
+    for (int i = 0; i < m_entity_cap; i++) delete m_entities[i];
+    delete[] m_entities;
+    delete m_map;
 }
 
 void Scene::initialise() {
     for (int i = 0; i < m_entity_cap; i++) {
-        delete m_state.entities[i];
-        m_state.entities[i] = nullptr;
+        delete m_entities[i];
+        m_entities[i] = nullptr;
     }
 }
 
 void Scene::update(float delta_time) {
     if (m_timer > 0.0f) m_timer -= delta_time;
     for (int i = 0; i < m_entity_cap; i++) {
-        if (m_state.entities[i]) {
-            m_state.entities[i]->update(delta_time, NULL, 0, m_state.map);
+        if (m_entities[i]) {
+            m_entities[i]->update(delta_time, NULL, 0, m_map);
         }
     }
 }
 
 void Scene::render(ShaderProgram* program) {
-    m_state.map->render(program);
+    m_map->render(program);
     for (int i = m_unordered_render_start; i < m_entity_cap; i++) {
-        if (m_state.entities[i]) {
-            m_state.entities[i]->render(program);
+        if (m_entities[i]) {
+            m_entities[i]->render(program);
         }
     }
 }

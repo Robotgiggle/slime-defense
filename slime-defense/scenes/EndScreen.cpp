@@ -28,30 +28,29 @@ const int LV1_DATA[] = {
 };
 
 // constructor definition
-EndScreen::EndScreen(int cap, bool win) : Scene(cap), m_win(win) {}
+EndScreen::EndScreen(int cap) : Scene(cap) {}
 
 // other methods
 void EndScreen::initialise() {
     // ————— BASICS ————— //
     Scene::initialise();
     m_next_scene_id = -1;
-    //m_unordered_render_start = 18;
 
     // ————— FONT ————— //
     m_font_texture_id = Utility::load_texture("assets/display_font.png");
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
+    m_map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
-    // ————— INFO BUTTON ————— //
+    // ————— EXIT BUTTON ————— //
     e_exit_button = new Entity(this);
 
     e_exit_button->set_position(glm::vec3(4.0f, 0.5f, 0.0f));
     e_exit_button->set_sprite_scale(glm::vec3(3.0f, 1.0f, 0.0f));
     e_exit_button->m_texture_id = Utility::load_texture("assets/menu_button.png");
 
-    e_exit_button->update(0.0f, NULL, 0, m_state.map);
+    e_exit_button->update(0.0f, NULL, 0, m_map);
 }
 
 void EndScreen::process_event(SDL_Event event) {
@@ -81,8 +80,12 @@ void EndScreen::render(ShaderProgram* program) {
     int hurts = m_global_info->livesLost;
     std::string killsDisplay = ((kills < 10)? "00" : (kills < 100)? "0" : "") + std::to_string(kills);
     std::string hurtsDisplay = ((hurts < 10)? "0" : "") + std::to_string(hurts);
-    if (m_win) Utility::draw_text(program, m_font_texture_id, "YOU WIN!", 1.0f, 0.0f, glm::vec3(0.7f, 5.2f, 0.0f));
-    else Utility::draw_text(program, m_font_texture_id, "YOU DIED!", 0.9f, 0.0f, glm::vec3(0.58f, 5.2f, 0.0f));
+
+    if (m_global_info->playerDied) {
+        Utility::draw_text(program, m_font_texture_id, "YOU DIED!", 0.9f, 0.0f, glm::vec3(0.58f, 5.2f, 0.0f));
+    } else {
+        Utility::draw_text(program, m_font_texture_id, "YOU WIN!", 1.0f, 0.0f, glm::vec3(0.7f, 5.2f, 0.0f));
+    }
     Utility::draw_text(program, m_font_texture_id, "SLIMES KILLED:"+killsDisplay, 0.4f, 0.0f, glm::vec3(0.8f, 3.5f, 0.0f));
     Utility::draw_text(program, m_font_texture_id, "LIVES LOST:"+hurtsDisplay, 0.45f, 0.0f, glm::vec3(1.3f, 2.3f, 0.0f));
     Utility::draw_text(program, m_font_texture_id, "EXIT", 0.42f, 0.0f, glm::vec3(3.38f, 0.5f, 0.0f));

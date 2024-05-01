@@ -36,11 +36,11 @@ Level1::Level1(int cap) : Level(cap) {}
 void Level1::initialise() {
     // ————— BASICS ————— //
     Level::initialise();
-    m_next_scene_id = 4;
+    m_next_scene_id = 3;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
-    m_state.map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
+    m_map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
     m_start_dir = 0;
     m_spawn_point = glm::vec3(1.0f, -1.5f, 0.0f);
@@ -64,14 +64,7 @@ void Level1::initialise() {
     e_path_end->set_scale(glm::vec3(0.4f, 2.0f, 0.0f));
 
     // ————— AUDIO ————— //
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
-    m_state.bgm = Mix_LoadMUS("assets/default_music.mp3");
-    //Mix_PlayMusic(m_state.bgm, -1);
-    //Mix_VolumeMusic(MIX_MAX_VOLUME / 3);
-
-    m_state.jumpSfx = Mix_LoadWAV("assets/default_jump.wav");
-    Mix_VolumeChunk(m_state.jumpSfx, MIX_MAX_VOLUME / 2);
 }
 
 //void Level1::update(float delta_time) {

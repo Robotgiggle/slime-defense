@@ -35,7 +35,7 @@ void PulseEntity::update(float delta_time, Entity* collidable_entities, int coll
 	case GROW:
 		m_current_radius += 4.3f * delta_time;
 		for (int i = 0; i < m_level->m_entity_cap; i++) {
-			Entity* other = m_level->m_state.entities[i];
+			Entity* other = m_level->m_entities[i];
 			if (!other) continue;
 			if (typeid(*other) != typeid(SlimeEntity)) continue;
 			SlimeEntity* slime = static_cast<SlimeEntity*>(other);
