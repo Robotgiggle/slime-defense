@@ -73,6 +73,7 @@ public:
 
     virtual void update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map);
     virtual void render(ShaderProgram* program);
+    void render_tinted(ShaderProgram* program, glm::vec3 tint);
 
     void move_left() { m_movement.x = -1.0f; };
     void move_right() { m_movement.x = 1.0f; };

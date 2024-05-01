@@ -43,7 +43,7 @@ public:
     void set_colour(float red, float green, float blue, float alpha);
     void set_tint(glm::vec3 tint);
     void no_tint();
-    
+
     GLuint const get_program_id()               const { return m_program_id;          };
     GLuint const get_position_attribute()       const { return m_position_attribute;  };
     GLuint const get_tex_coordinate_attribute() const { return m_tex_coord_attribute; };

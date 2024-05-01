@@ -36,7 +36,7 @@ Level1::Level1(int cap) : Level(cap) {}
 void Level1::initialise() {
     // ————— BASICS ————— //
     Level::initialise();
-    m_next_scene_id = 2;
+    m_next_scene_id = 3;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");

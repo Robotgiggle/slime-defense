@@ -86,7 +86,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for path end
 	if (check_collision(m_level->e_path_end)) {
-		m_level->m_lives -= 1;
+		m_level->m_lives -= (m_slime_type == BOSS)? 10 : 1;
 		despawn();
 		return;
 	}
@@ -171,9 +171,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 }
 
 void SlimeEntity::render(ShaderProgram* program) {
-	program->set_tint(m_tint);
-	Entity::render(program);
-	program->no_tint();
+	Entity::render_tinted(program, m_tint);
 }
 
 glm::vec3 const SlimeEntity::get_goal_corner() const {

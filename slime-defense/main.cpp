@@ -14,6 +14,7 @@
 #include "Utility.h"
 #include "Scene.h"
 #include "scenes/MainMenu.h"
+#include "scenes/InfoPage.h"
 #include "scenes/Level1.h"
 
 // ————— CONSTANTS ————— //
@@ -52,6 +53,7 @@ const float FIXED_TIMESTEP = 0.0166666f;
 const int NUM_OF_SCENES = 2;
 Scene* const ALL_SCENES[] = {
     new MainMenu(20),
+    new InfoPage(20),
     new Level1(100),
 };
 

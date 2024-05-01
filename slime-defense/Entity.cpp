@@ -390,6 +390,12 @@ void Entity::render(ShaderProgram* program)
     glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
 }
 
+void Entity::render_tinted(ShaderProgram* program, glm::vec3 tint) {
+    program->set_tint(tint);
+    Entity::render(program);
+    program->no_tint();
+}
+
 bool const Entity::check_collision(Entity* other) const
 {
     // If either entity is inactive, there shouldn't be any collision

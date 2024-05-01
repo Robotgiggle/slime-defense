@@ -34,7 +34,7 @@ MainMenu::MainMenu(int cap) : Scene(cap) {}
 void MainMenu::initialise() {
     // ————— BASICS ————— //
     Scene::initialise();
-    m_next_scene_id = 1;
+    m_next_scene_id = 2;
     m_unordered_render_start = 18;
 
     // ————— FONT ————— //
@@ -87,7 +87,8 @@ void MainMenu::process_event(SDL_Event event) {
         if (Utility::touching_entity(m_global_info->mousePos, e_play_button, 0)) {
             m_global_info->changeScenes = true;
         } else if (Utility::touching_entity(m_global_info->mousePos, e_info_button, 0)) {
-            // load info scene
+            m_next_scene_id = 1;
+            m_global_info->changeScenes = true;
         }
         break;
     default:
