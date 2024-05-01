@@ -7,6 +7,8 @@ struct GlobalInfo {
     bool gameIsRunning = true;
     bool changeScenes = false;
     bool gamePaused = false;
+    int slimesKilled = 0;
+    int livesLost = 0;
     glm::vec3 mousePos;
 };
 

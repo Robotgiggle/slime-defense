@@ -86,7 +86,9 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// check for path end
 	if (check_collision(m_level->e_path_end)) {
-		m_level->m_lives -= (m_slime_type == BOSS)? 10 : 1;
+		int damage = (m_slime_type == BOSS) ? 10 : 1;
+		m_level->m_global_info->livesLost += damage;
+		m_level->m_lives -= damage;
 		despawn();
 		return;
 	}
@@ -146,6 +148,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 			}
 		}
 		// basic death effects
+		m_level->m_global_info->slimesKilled++;
 		m_level->m_money++;
 		despawn();
 		return;

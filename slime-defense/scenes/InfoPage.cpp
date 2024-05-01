@@ -35,7 +35,7 @@ void InfoPage::initialise() {
     // ————— BASICS ————— //
     Scene::initialise();
     m_next_scene_id = 0;
-    m_unordered_render_start = 18;
+    m_unordered_render_start = 5;
 
     // ————— FONT ————— //
     m_font_texture_id = Utility::load_texture("assets/display_font.png");
@@ -87,43 +87,17 @@ void InfoPage::process_input() {
 }
 
 void InfoPage::update(float delta_time) {
-    /*for (int i = 2; i < 18; i++) {
-        Entity* fakeSlime = m_state.entities[i];
-        glm::vec3 pos = fakeSlime->get_position();
-
-        float xOffset = (rand() % 11 - 5) / 20.0f;
-        if (pos.x > 7.0f) {
-            if (pos.y <= -1.0f) {
-                fakeSlime->set_position(glm::vec3(0.05f + xOffset, -1.0f, 0.0f));
-                fakeSlime->move_up();
-            }
-            else {
-                fakeSlime->move_down();
-            }
-        }
-        else {
-            if (pos.y >= 7.0f) {
-                fakeSlime->set_position(glm::vec3(7.95f + xOffset, 7.0f, 0.0f));
-                fakeSlime->move_down();
-            }
-            else {
-                fakeSlime->move_up();
-            }
-        }
-    }*/
-
     Scene::update(delta_time);
 }
 
 void InfoPage::render(ShaderProgram* program) {
     Scene::render(program);
 
-    e_back_button->render(program);
-    m_state.entities[1]->render_tinted(program, glm::vec3(0.4f, 0.9f, 0.1f));
-    m_state.entities[2]->render_tinted(program, glm::vec3(1.0f, 0.35f, 0.35f));
-    m_state.entities[3]->render_tinted(program, glm::vec3(0.05f, 0.6f, 1.0f));
-    m_state.entities[4]->render_tinted(program, glm::vec3(0.90f, 0.54f, 0.96f));
-    m_state.entities[5]->render_tinted(program, glm::vec3(1.0f, 0.68f, 0.15f));
+    m_state.entities[0]->render_tinted(program, glm::vec3(0.4f, 0.9f, 0.1f));
+    m_state.entities[1]->render_tinted(program, glm::vec3(1.0f, 0.35f, 0.35f));
+    m_state.entities[2]->render_tinted(program, glm::vec3(0.05f, 0.6f, 1.0f));
+    m_state.entities[3]->render_tinted(program, glm::vec3(0.90f, 0.54f, 0.96f));
+    m_state.entities[4]->render_tinted(program, glm::vec3(1.0f, 0.68f, 0.15f));
 
     std::string lines[6] = {
         "PREVENT THE SLIMES FROM",

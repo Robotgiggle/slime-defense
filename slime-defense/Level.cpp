@@ -8,7 +8,6 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <vector>
-#include <string>
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
@@ -173,6 +172,12 @@ void Level::update(float delta_time) {
 		for (int i = m_turn_point_count; i < 10; i++) {
 			m_turn_points[i] = e_path_end->get_position();
 		}
+	}
+
+	// check for zero lives
+	if (m_lives <= 0) {
+		m_next_scene_id = 3;
+		m_global_info->changeScenes = true;
 	}
 
 	// turret button visibility

@@ -4,8 +4,8 @@
 class MainMenu : public Scene {
 public:
     // ————— CUSTOM ENTITIES ————— //
-    Entity*& e_play_button = m_state.entities[0];
-    Entity*& e_info_button = m_state.entities[1];
+    Entity*& e_play_button = m_state.entities[16];
+    Entity*& e_info_button = m_state.entities[17];
 
     // ————— FONT ————— //
     GLuint m_font_texture_id;

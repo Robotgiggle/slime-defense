@@ -35,7 +35,7 @@ void MainMenu::initialise() {
     // ————— BASICS ————— //
     Scene::initialise();
     m_next_scene_id = 2;
-    m_unordered_render_start = 18;
+    m_unordered_render_start = 16;
 
     // ————— FONT ————— //
     m_font_texture_id = Utility::load_texture("assets/display_font.png");
@@ -101,7 +101,7 @@ void MainMenu::process_input() {
 }
 
 void MainMenu::update(float delta_time) {
-    for (int i = 2; i < 18; i++) {
+    for (int i = 0; i < 16; i++) {
         Entity* fakeSlime = m_state.entities[i];
         glm::vec3 pos = fakeSlime->get_position();
 
@@ -130,10 +130,8 @@ void MainMenu::update(float delta_time) {
 void MainMenu::render(ShaderProgram* program) {
     Scene::render(program);
 
-    e_play_button->render(program);
-    e_info_button->render(program);
     program->set_tint(glm::vec3(0.4f, 0.9f, 0.1f));
-    for (int i = 2; i < 18; i++) {
+    for (int i = 0; i < 16; i++) {
         m_state.entities[i]->render(program);
     }
     program->no_tint();
