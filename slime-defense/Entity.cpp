@@ -175,18 +175,17 @@ void Entity::update(float delta_time, Entity* solid_entities, int solid_entity_c
         break;
     }
 
-    float leftBarrier = map? map->get_left_bound() + (m_scale.x / 2) : -200.0f;
-    float rightBarrier = map? map->get_right_bound() - (m_scale.x / 2) : 200.0f;
-    if ((m_position.x > leftBarrier or m_velocity.x > 0.0f) and (m_position.x < rightBarrier or m_velocity.x < 0.0f)) {
-        m_position += m_velocity * delta_time;
-    } else {
-        m_position.y += m_velocity.y * delta_time;
-    }
-
     if (m_has_collision and map) {
+        float leftBarrier = map ? map->get_left_bound() + (m_scale.x / 2) : -200.0f;
+        float rightBarrier = map ? map->get_right_bound() - (m_scale.x / 2) : 200.0f;
+        if (!(m_position.x > leftBarrier or m_velocity.x > 0.0f) or !(m_position.x < rightBarrier or m_velocity.x < 0.0f)) {
+            m_velocity.x = 0.0f;
+        }
         check_solid_collision(solid_entities, solid_entity_count);
         check_solid_collision(map);
     }
+
+    m_position += m_velocity * delta_time;
 
     // ––––– ROTATION ––––– //
     m_angle += m_rotation * m_rot_speed * 45.0f * delta_time;

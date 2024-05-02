@@ -45,7 +45,7 @@
     <ClCompile Include="entities\PulseEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scenes\Level1.cpp">
+    <ClCompile Include="scenes\Level3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scenes\MainMenu.cpp">
@@ -55,6 +55,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="scenes\EndScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\Level2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\Level1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,7 +95,7 @@
     <ClInclude Include="entities\PulseEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scenes\Level1.h">
+    <ClInclude Include="scenes\Level3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scenes\MainMenu.h">
@@ -99,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scenes\EndScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\Level2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\Level1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

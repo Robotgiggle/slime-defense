@@ -14,43 +14,40 @@
 #include "../Utility.h"
 #include "../entities/SlimeEntity.h"
 #include "../entities/TurretEntity.h"
-#include "Level1.h"
+#include "Level2.h"
 
 // terrain map
 const int LV1_WIDTH = 7,
           LV1_HEIGHT = 7;
 const int LV1_DATA[] = {
-    13,  0, 18, 19,  2, 12, 12,
-    13,  0,  0,  0, 11, 12, 12,
-     8,  5,  6,  0, 18, 19,  2,
-    12, 12, 13,  0,  0,  0, 11,
-    12,  1, 30, 15, 16,  0, 11,
-    12, 13,  0,  0,  0,  0, 11,
-    12, 13,  0,  4,  5,  5,  9,
+     1, 19, 19, 19, 19,  2, 12,
+    13,  0,  0,  0,  0, 11, 12,
+    13,  0,  4,  6,  0, 11, 12,
+    13,  0, 11, 13,  0, 18, 19,
+    13,  0, 11, 13,  0,  0,  0,
+    13,  0, 11,  8,  5,  5,  5,
+    13,  0, 11, 12, 12, 12, 12,
 };
 
 // constructor definition
-Level1::Level1(int cap) : Level(cap) {}
+Level2::Level2(int cap) : Level(cap) {}
 
 // other methods
-void Level1::initialise() {
+void Level2::initialise() {
     // ————— BASICS ————— //
     Level::initialise();
-    m_next_scene_id = 3;
+    m_next_scene_id = 4;
 
     // ————— TERRAIN ————— //
     GLuint map_texture_id = Utility::load_texture("assets/tileset.png");
     m_map = new Map(LV1_WIDTH, LV1_HEIGHT, LV1_DATA, map_texture_id, 1.0f, 7, 7);
 
     m_start_dir = 0;
-    m_spawn_point = glm::vec3(2.0f, -1.5f, 0.0f);
-    m_turn_points[0] = glm::vec3(2.0f, 1.0f, 0.0f);
-    m_turn_points[1] = glm::vec3(5.0f, 1.0f, 1.0f);
-    m_turn_points[2] = glm::vec3(5.0f, 3.0f, 1.0f);
-    m_turn_points[3] = glm::vec3(3.0f, 3.0f, 0.0f);
-    m_turn_points[4] = glm::vec3(3.0f, 5.0f, 1.0f);
-    m_turn_points[5] = glm::vec3(1.0f, 5.0f, 0.0f);
-    m_turn_point_count = 6;
+    m_spawn_point = glm::vec3(1.0f, -1.5f, 0.0f);
+    m_turn_points[0] = glm::vec3(1.0f, 5.0f, 0.0f);
+    m_turn_points[1] = glm::vec3(4.0f, 5.0f, 0.0f);
+    m_turn_points[2] = glm::vec3(4.0f, 2.0f, 1.0f);
+    m_turn_point_count = 3;
 
     // ————— WAVES ————— //
     m_waves[0] = SlimeWave{ 1, 6, 0, 0, 0, 0 };
@@ -63,6 +60,6 @@ void Level1::initialise() {
     // ————— PATH END ————— //
     e_path_end = new Entity(this);
 
-    e_path_end->set_position(glm::vec3(1.0f, 7.3f, 0.0f));
-    e_path_end->set_scale(glm::vec3(2.0f, 0.4f, 0.0f));
+    e_path_end->set_position(glm::vec3(7.3f, 2.0f, 0.0f));
+    e_path_end->set_scale(glm::vec3(0.4f, 2.0f, 0.0f));
 }

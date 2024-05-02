@@ -15,7 +15,9 @@
 #include "Scene.h"
 #include "scenes/MainMenu.h"
 #include "scenes/InfoPage.h"
+#include "scenes/Level3.h"
 #include "scenes/Level1.h"
+#include "scenes/Level2.h"
 #include "scenes/EndScreen.h"
 
 // ————— CONSTANTS ————— //
@@ -23,12 +25,12 @@
 // window size
 const int WINDOW_WIDTH = 648,
           WINDOW_HEIGHT = 504;
-          //WINDOW_HEIGHT = 648;
 
 // camera size
 const float CAMERA_WIDTH = 9.0f,
+            //CAMERA_WIDTH = 12.0f,
             CAMERA_HEIGHT = 7.0f;
-            //CAMERA_HEIGHT = 9.0f;
+            //CAMERA_HEIGHT = 10.0f;
 
 // background color
 const float BG_RED = 0.50f,
@@ -51,13 +53,13 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 const float FIXED_TIMESTEP = 0.0166666f;
 
 // scenes
-const int NUM_OF_SCENES = 4;
+const int NUM_OF_SCENES = 6;
 Scene* const ALL_SCENES[] = {
     new MainMenu(20),
     new InfoPage(20),
     new Level1(100),
-    //  Level2
-    //  Level3
+    new Level2(100),
+    new Level3(100),
     new EndScreen(20)
 };
 

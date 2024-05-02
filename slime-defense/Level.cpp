@@ -49,6 +49,7 @@ void Level::initialise() {
 	e_game_menu = new Entity(this);
 
 	e_game_menu->set_position(glm::vec3(7.5f, 3.0f, 0.0f));
+	e_game_menu->set_scale(glm::vec3(2.0f, 7.0f, 0.0f));
 	e_game_menu->set_sprite_scale(glm::vec3(2.0f, 7.0f, 0.0f));
 	e_game_menu->set_collision(false);
 
@@ -95,12 +96,13 @@ void Level::process_event(SDL_Event event) {
 		// process click triggers
 		if (m_held_item == NONE) {
 			if (Utility::touching_entity(m_global_info->mousePos, e_next_button, 0)) {
-				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
-				if (m_current_wave == m_wave_count - 1) {
+				if (m_current_wave >= m_wave_count - 1) {
 					// if the last wave is done, move to the next level
+					Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 					m_global_info->changeScenes = true;
-				} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
+				} else if (m_current_wave < 0 or m_slimes_alive == 0) {
 					// otherwise, start the next wave
+					Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 					e_next_button->m_animation_index = 2;
 					m_current_wave++;
 				}
@@ -156,6 +158,16 @@ void Level::process_event(SDL_Event event) {
 			// debug level reset
 			this->initialise();
 			break;
+		case SDLK_RIGHT:
+			// debug wave skip
+			for (int i = 0; i < m_entity_cap; i++) {
+				Entity* entity = m_entities[i];
+				if (!entity) continue;
+				if (typeid(*entity) == typeid(SlimeEntity)) entity->despawn();
+			}
+			e_next_button->m_animation_index = 2;
+			m_current_wave++;
+			break;
 		default:
 			break;
 		}
@@ -181,16 +193,22 @@ void Level::update(float delta_time) {
 
 	// check for zero lives
 	if (m_lives <= 0) {
-		m_next_scene_id = 3; // CHANGE THIS ONCE DEATH SCREEN ISN'T SCENE 3 ANYMORE
+		m_next_scene_id = 5;
 		m_global_info->playerDied = true;
 		m_global_info->changeScenes = true;
 	}
 
-	// turret button visibility
+	// turret button activation
 	if (m_money < m_turret_cost) e_gun_turret_button->m_animation_index = 1;
 	else e_gun_turret_button->m_animation_index = 0;
 	if (m_money < glm::min(9,m_turret_cost+1)) e_aoe_turret_button->m_animation_index = 1;
 	else e_aoe_turret_button->m_animation_index = 0;
+
+	// next-wave button activation
+	if (m_slimes_alive == 0 and !m_waves[m_current_wave].slimes_left() and e_next_button->m_animation_index == 2) {
+		if (m_current_wave >= m_wave_count - 1) e_next_button->m_animation_index = 1;
+		else e_next_button->m_animation_index = 0;
+	}
 
 	// held item cursor tracking
 	if (m_held_item != NONE) {
@@ -301,12 +319,13 @@ bool Level::check_placement_validity() {
 	for (const glm::vec3& corner : dropZone) {
 		if (!m_map->is_solid(m_global_info->mousePos + corner)) return false;
 	}
-	// check if you're trying to place on another turret
+	// check if you're trying to place on the menu or on another turret
 	for (int i = 0; i < m_entity_cap; i++) {
 		Entity* other = m_entities[i];
 		if (!other) continue;
-		if (typeid(*other) != typeid(TurretEntity)) continue;
-		if (e_cursor_item->check_collision(other)) return false;
+		if ((other == e_game_menu or typeid(*other) == typeid(TurretEntity)) and e_cursor_item->check_collision(other)) {
+			return false;
+		}
 	}
 	// if all checks pass, this spot is valid
 	return true;

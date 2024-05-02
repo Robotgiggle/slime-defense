@@ -38,16 +38,7 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 }
 
 SlimeEntity::~SlimeEntity() {
-	// decrement slime count
 	m_level->m_slimes_alive--;
-	// if this was the last slime, enable the next-wave or next-level button
-	if (m_level->m_slimes_alive == 0) {
-		if (m_level->m_current_wave == m_level->m_wave_count - 1) {
-			m_level->e_next_button->m_animation_index = 1;
-		} else {
-			m_level->e_next_button->m_animation_index = 0;
-		}
-	}
 }
 
 void SlimeEntity::update(float delta_time, Entity* collidable_entities, int collidable_entity_count, Map* map) {
@@ -85,7 +76,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	}
 
 	// out-of-bounds failsafe
-	if (glm::distance(get_position(),glm::vec3(4.0f,3.0f,0.0f)) > 6.0f) {
+	if (glm::distance(get_position(),glm::vec3(4.0f,3.0f,0.0f)) > 10.0f) {
 		LOG("WARNING - slime out of bounds");
 		despawn();
 		return;
@@ -165,7 +156,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// health regeneration
 	if (m_slime_type != BASIC and m_slime_type != SPLIT and m_health < m_max_health) {
-		if (m_slime_type == BOSS) m_health += 0.04f;
+		if (m_slime_type == BOSS) m_health += 0.03f;
 		else m_health += 0.005f;
 	}
 

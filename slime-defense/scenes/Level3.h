@@ -1,13 +1,13 @@
 #pragma once
 #include "../Level.h"
 
-class Level1 : public Level {
+class Level3 : public Level {
 public:
     // ————— LEVEL-SPECIFIC ENTITIES ————— //
 
 
     // ————— METHODS ————— //
-    Level1(int cap);
+    Level3(int cap);
 
     void initialise() override;
 

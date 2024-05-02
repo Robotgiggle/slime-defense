@@ -142,6 +142,8 @@
     <ClCompile Include="scenes\EndScreen.cpp" />
     <ClCompile Include="scenes\InfoPage.cpp" />
     <ClCompile Include="scenes\Level1.cpp" />
+    <ClCompile Include="scenes\Level3.cpp" />
+    <ClCompile Include="scenes\Level2.cpp" />
     <ClCompile Include="scenes\MainMenu.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -158,6 +160,8 @@
     <ClInclude Include="scenes\EndScreen.h" />
     <ClInclude Include="scenes\InfoPage.h" />
     <ClInclude Include="scenes\Level1.h" />
+    <ClInclude Include="scenes\Level3.h" />
+    <ClInclude Include="scenes\Level2.h" />
     <ClInclude Include="scenes\MainMenu.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Entity.h" />
