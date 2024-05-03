@@ -3,9 +3,6 @@
 
 class Level2 : public Level {
 public:
-    // ————— LEVEL-SPECIFIC ENTITIES ————— //
-    
-
     // ————— METHODS ————— //
     Level2(int cap);
 

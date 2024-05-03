@@ -12,7 +12,6 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Level.h"
-#include "../Utility.h"
 #include "SlimeEntity.h"
 
 SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
@@ -26,14 +25,17 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 	m_level = static_cast<Level*>(scene);
 	m_max_health = health;
 	m_health = health;
+	
 	set_speed(0.8f + m_level->m_current_wave * 0.04f);
+	m_level->m_slimes_alive++;
+
 	switch (m_slime_type) {
-	case BASIC: m_tint    = glm::vec3(0.4f, 0.9f, 0.1f); break;
-	case REGEN: m_tint    = glm::vec3(1.0f, 0.35f, 0.35f); break;
-	case SPLIT: m_tint    = glm::vec3(0.05f, 0.6f, 1.0f); break;
-	case ELITE: m_tint    = glm::vec3(0.90f, 0.54f, 0.96f); break;
-	case BOSS: m_tint     = glm::vec3(1.0f, 0.68f, 0.15f); break;
-	default: m_tint       = glm::vec3(0.65f, 0.65f, 0.65f); break;
+	case BASIC: m_tint = glm::vec3(0.4f, 0.9f, 0.1f); break;
+	case REGEN: m_tint = glm::vec3(1.0f, 0.35f, 0.35f); break;
+	case SPLIT: m_tint = glm::vec3(0.05f, 0.6f, 1.0f); break;
+	case ELITE: m_tint = glm::vec3(0.90f, 0.54f, 0.96f); break;
+	case BOSS:  m_tint = glm::vec3(1.0f, 0.68f, 0.15f); break;
+	default:    m_tint = glm::vec3(0.65f, 0.65f, 0.65f); break;
 	}
 }
 
@@ -65,16 +67,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		break;
 	}
 
-	// course correction
-	glm::vec3 turnPoint = m_level->m_turn_points[m_target_point_index];
-	if (m_ai_state == MOVE_UP or m_ai_state == MOVE_DOWN) {
-		if (get_position().x < turnPoint.x - 0.49f) move_right();
-		else if (get_position().x > turnPoint.x + 0.49f) move_left();
-	} else {
-		if (get_position().y < turnPoint.y - 0.49f) move_up();
-		else if (get_position().y > turnPoint.y + 0.49f) move_down();
-	}
-
 	// out-of-bounds failsafe
 	if (glm::distance(get_position(),glm::vec3(4.0f,3.0f,0.0f)) > 10.0f) {
 		LOG("WARNING - slime out of bounds");
@@ -85,14 +77,26 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	// check for path end
 	if (check_collision(m_level->e_path_end)) {
 		Mix_PlayChannel(-1, m_level->m_global_info->ouchSfx, 0);
-		int damage = (m_slime_type == BOSS) ? 10 : 1;
-		m_level->m_lives -= damage;
+		m_level->m_lives -= (m_slime_type == BOSS)? 10 : 1;
 		despawn();
 		return;
 	}
 
+	// course correction
+	glm::vec3 turnPoint = m_level->m_turn_points[m_target_point_index];
+	if (m_ai_state == MOVE_UP or m_ai_state == MOVE_DOWN) {
+		if (get_position().x < turnPoint.x - 0.49f) move_right();
+		else if (get_position().x > turnPoint.x + 0.49f) move_left();
+	}
+	else {
+		if (get_position().y < turnPoint.y - 0.49f) move_up();
+		else if (get_position().y > turnPoint.y + 0.49f) move_down();
+	}
+
 	// turning logic
-	if (abs(get_position().x - turnPoint.x) <= 0.5 and abs(get_position().y - turnPoint.y) <= 0.5) {
+	if (abs(get_position().x - turnPoint.x) <= 0.5 
+	and abs(get_position().y - turnPoint.y) <= 0.5
+	and m_target_point_index < m_level->m_turn_point_count) {
 		// calculate the corner to turn around
 		glm::vec3 turnCorner = get_goal_corner();
 		float xDist = abs(get_position().x - turnCorner.x);
@@ -101,11 +105,10 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		// if we're positioned correctly, make the turn
 		bool horizTurn = (m_ai_state == MOVE_UP or m_ai_state == MOVE_DOWN) and yDist >= xDist;
 		bool vertTurn = (m_ai_state == MOVE_RIGHT or m_ai_state == MOVE_LEFT) and xDist >= yDist;
-		bool inBounds = (get_position().x - 3) < 3.5f and (get_position().y - 3) < 3.5f;
-		if ((horizTurn or vertTurn) and m_turn_cooldown <= 0.0f and inBounds) {
+		if ((horizTurn or vertTurn) and m_turn_cooldown <= 0.0f) {
 			m_turn_cooldown = 1.0f;
 			m_target_point_index++;
-			m_ai_state = static_cast<AIState>((m_ai_state + 4 + (turnCorner.z ? -1 : 1)) % 4);
+			m_ai_state = static_cast<AIState>((m_ai_state + (turnCorner.z? 3 : 5)) % 4);
 		}
 	}
 	if (m_turn_cooldown > 0) m_turn_cooldown -= delta_time;
@@ -114,7 +117,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	for (int i = 0; i < m_level->m_entity_cap; i++) {
 		Entity* other = m_level->m_entities[i];
 		if (!other) continue;
-
 		if (check_collision(other) and typeid(*other) != typeid(SlimeEntity) and glm::length(other->get_movement()) > 0) {
 			// if it's not a slime and it's moving, it's a bullet
 			m_health -= 1;
@@ -166,8 +168,8 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 
 	// adjust size based on health
 	float healthFactor = (m_health / 10.0f + 0.5f);
-	set_scale(glm::vec3(0.36f, 0.48f, 0.0f)* healthFactor);
-	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f)* healthFactor);
+	set_scale(glm::vec3(0.36f, 0.48f, 0.0f) * healthFactor);
+	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f) * healthFactor);
 
 	// movment animation
 	set_sprite_height(get_sprite_height() * (1 + 0.08f * sin(m_squish_factor)));

@@ -12,7 +12,6 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Level.h"
-#include "../Utility.h"
 #include "SlimeEntity.h"
 #include "PulseEntity.h"
 #include "TurretEntity.h"
@@ -51,8 +50,8 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 			Entity* other = m_level->m_entities[i];
 			if (!other) continue;
 			if (typeid(*other) == typeid(SlimeEntity) and glm::distance(get_position(), other->get_position()) <= m_range) {
-				SlimeEntity* slime = static_cast<SlimeEntity*>(other);
 				// target whichever slime is furthest forward
+				SlimeEntity* slime = static_cast<SlimeEntity*>(other);
 				float distToGoal = glm::distance(slime->get_position(), slime->get_goal_corner());
 				if (distToGoal < lowestGoalDist and slime->get_goal_index() >= furthestGoalIndex) {
 					lowestGoalDist = distToGoal;
@@ -62,7 +61,7 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 				}
 			}
 		}
-		// stop rotating if no targets found
+		// for aoe turrets, stop rotating if no targets found
 		if (!m_target) m_head_entity.set_rotation(0);
 		break; }
 	case TRACKING: {

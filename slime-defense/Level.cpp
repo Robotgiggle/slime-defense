@@ -11,7 +11,6 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
-#include "Utility.h"
 #include "Level.h"
 #include "entities/SlimeEntity.h"
 #include "entities/TurretEntity.h"
@@ -252,7 +251,6 @@ void Level::update(float delta_time) {
 			}
 			if (!overlap) {
 				// pick a slime type from the ones remaining in the wave, and spawn it
-				m_slimes_alive++;
 				SlimeEntity* newSlime;
 				while (true) {
 					int type = rand() % 20;

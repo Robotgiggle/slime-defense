@@ -10,10 +10,6 @@
 #include <SDL_opengl.h>
 #include "../glm/mat4x4.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
-#include "../ShaderProgram.h"
-#include "../Utility.h"
-#include "../entities/SlimeEntity.h"
-#include "../entities/TurretEntity.h"
 #include "Level3.h"
 
 // terrain map

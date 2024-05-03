@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL_mixer.h>
+#include "Utility.h"
 #include "Entity.h"
 #include "Map.h"
 

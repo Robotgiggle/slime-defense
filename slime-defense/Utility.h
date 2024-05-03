@@ -1,4 +1,5 @@
 #pragma once
+#include "ShaderProgram.h"
 
 class Entity;
 

@@ -1,6 +1,7 @@
 #pragma once
 #define LOG(argument) std::cout << argument << '\n'
 #include <vector>
+#include "ShaderProgram.h"
 
 class Map {
 private:

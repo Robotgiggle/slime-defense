@@ -11,7 +11,6 @@
 #include <SDL_image.h>
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "ShaderProgram.h"
 #include "Map.h"
 
 Map::Map(const int width, const int height, const int* level_data, GLuint texture_id, float tile_size, int tilemap_width, int tilemap_height)

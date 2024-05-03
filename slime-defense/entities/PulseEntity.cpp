@@ -13,7 +13,6 @@
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../ShaderProgram.h"
 #include "../Level.h"
-#include "../Utility.h"
 #include "SlimeEntity.h"
 #include "PulseEntity.h"
 
@@ -41,7 +40,7 @@ void PulseEntity::update(float delta_time, Entity* collidable_entities, int coll
 			SlimeEntity* slime = static_cast<SlimeEntity*>(other);
 			// if the slime is in range and hasn't been damaged yet, damage it
 			if (glm::distance(get_position(), other->get_position()) <= m_current_radius
-				and std::find(m_damaged.begin(),m_damaged.end(),slime) == m_damaged.end()) {
+			and std::find(m_damaged.begin(),m_damaged.end(),slime) == m_damaged.end()) {
 				slime->change_health(-m_damage);
 				m_damaged.push_back(slime);
 			}
@@ -53,7 +52,6 @@ void PulseEntity::update(float delta_time, Entity* collidable_entities, int coll
 	case SHRINK:
 		m_current_radius -= 3.7f * delta_time;
 		if (m_current_radius <= 0) {
-			m_ai_state = SHRINK;
 			despawn();
 			return;
 		}

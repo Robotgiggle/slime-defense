@@ -1,3 +1,13 @@
+/**
+* Author: Ben Miller
+* Assignment: Slime Tower Defense
+* Date due: 2024-05-03, 3:00pm
+* I pledge that I have completed this assignment without
+* collaborating with anyone else, in conformance with the
+* NYU School of Engineering Policies and Procedures on
+* Academic Misconduct.
+**/
+
 #define LOG(argument) std::cout << argument << '\n'
 #define GL_SILENCE_DEPRECATION
 #define GL_GLEXT_PROTOTYPES 1
@@ -11,7 +21,6 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
-#include "Utility.h"
 #include "Scene.h"
 #include "scenes/MainMenu.h"
 #include "scenes/InfoPage.h"
@@ -28,9 +37,7 @@ const int WINDOW_WIDTH = 648,
 
 // camera size
 const float CAMERA_WIDTH = 9.0f,
-            //CAMERA_WIDTH = 12.0f,
             CAMERA_HEIGHT = 7.0f;
-            //CAMERA_HEIGHT = 10.0f;
 
 // background color
 const float BG_RED = 0.50f,
@@ -199,8 +206,9 @@ void render()
 
 void shutdown() { 
     Mix_FreeChunk(g_globalInfo.clickSfx);
-    Mix_FreeChunk(g_globalInfo.killSfx);
+    Mix_FreeChunk(g_globalInfo.placeSfx);
     Mix_FreeChunk(g_globalInfo.ouchSfx);
+    Mix_FreeChunk(g_globalInfo.killSfx);
     Mix_FreeMusic(g_backgroundMusic);
     SDL_Quit();
     for (int i = 0; i < NUM_OF_SCENES; i++) delete ALL_SCENES[i];
