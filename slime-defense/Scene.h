@@ -9,7 +9,7 @@ struct GlobalInfo {
     bool playerDied = false;
     bool gamePaused = false;
     int slimesKilled = 0;
-    int livesLost = 0;
+    int wavesCleared = 0;
     glm::vec3 mousePos;
     Mix_Chunk* clickSfx;
     Mix_Chunk* placeSfx;

@@ -97,7 +97,7 @@ void TurretEntity::update(float delta_time, Entity* collidable_entities, int col
 				bullet->set_scale(glm::vec3(0.17f, 0.17f, 0.0f));
 				bullet->set_sprite_scale(glm::vec3(0.17f, 0.17f, 0.0f));
 				bullet->m_texture_id = Utility::load_texture("assets/bullet.png");
-				m_shot_cooldown = 0.7f;
+				m_shot_cooldown = 0.6f;
 			}
 		}
 		break; }

@@ -15,11 +15,12 @@ private:
 	float m_health;
 	float m_squish_factor = 0.0f;
 	float m_turn_cooldown = 0.0f;
+	bool m_is_child = false;
 	int m_target_point_index = 0;
 
 	const glm::vec3 m_turn_offsets[4] = {
 		glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f)
+		glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f)
 	};
 public:
 	SlimeEntity(Scene* scene, int type, float health, int dir);
@@ -37,6 +38,7 @@ public:
 	Level*    const get_level()       const { return m_level; };
 	glm::vec3 const get_goal_corner() const;
 	int       const get_goal_index()  const { return m_target_point_index; };
+	int       const get_slime_type()  const { return m_slime_type; };
 
 	// ————— SETTERS ————— //
 	void const set_ai_state(AIState new_state) { m_ai_state = new_state; }

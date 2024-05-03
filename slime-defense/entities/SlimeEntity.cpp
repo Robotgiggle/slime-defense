@@ -17,7 +17,6 @@
 
 SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity(scene) {
 	set_motion_type(TOP_DOWN);
-	set_speed(0.8f);
 	set_scale(glm::vec3(0.36f, 0.48f, 0.0f) * (health/10.0f + 0.5f));
 	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f) * (health/10.0f + 0.5f));
 	set_collision(false);
@@ -27,6 +26,7 @@ SlimeEntity::SlimeEntity(Scene* scene, int type, float health, int dir) : Entity
 	m_level = static_cast<Level*>(scene);
 	m_max_health = health;
 	m_health = health;
+	set_speed(0.8f + m_level->m_current_wave * 0.04f);
 	switch (m_slime_type) {
 	case BASIC: m_tint    = glm::vec3(0.4f, 0.9f, 0.1f); break;
 	case REGEN: m_tint    = glm::vec3(1.0f, 0.35f, 0.35f); break;
@@ -68,11 +68,11 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	// course correction
 	glm::vec3 turnPoint = m_level->m_turn_points[m_target_point_index];
 	if (m_ai_state == MOVE_UP or m_ai_state == MOVE_DOWN) {
-		if (get_position().x < turnPoint.x - 0.5f) move_right();
-		else if (get_position().x > turnPoint.x + 0.5f) move_left();
+		if (get_position().x < turnPoint.x - 0.49f) move_right();
+		else if (get_position().x > turnPoint.x + 0.49f) move_left();
 	} else {
-		if (get_position().y < turnPoint.y - 0.5f) move_up();
-		else if (get_position().y > turnPoint.y + 0.5f) move_down();
+		if (get_position().y < turnPoint.y - 0.49f) move_up();
+		else if (get_position().y > turnPoint.y + 0.49f) move_down();
 	}
 
 	// out-of-bounds failsafe
@@ -86,7 +86,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	if (check_collision(m_level->e_path_end)) {
 		Mix_PlayChannel(-1, m_level->m_global_info->ouchSfx, 0);
 		int damage = (m_slime_type == BOSS) ? 10 : 1;
-		m_level->m_global_info->livesLost += damage;
 		m_level->m_lives -= damage;
 		despawn();
 		return;
@@ -100,7 +99,10 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		float yDist = abs(get_position().y - turnCorner.y);
 
 		// if we're positioned correctly, make the turn
-		if (abs(xDist - yDist) < 0.01f and m_turn_cooldown <= 0.0f) {
+		bool horizTurn = (m_ai_state == MOVE_UP or m_ai_state == MOVE_DOWN) and yDist >= xDist;
+		bool vertTurn = (m_ai_state == MOVE_RIGHT or m_ai_state == MOVE_LEFT) and xDist >= yDist;
+		bool inBounds = (get_position().x - 3) < 3.5f and (get_position().y - 3) < 3.5f;
+		if ((horizTurn or vertTurn) and m_turn_cooldown <= 0.0f and inBounds) {
 			m_turn_cooldown = 1.0f;
 			m_target_point_index++;
 			m_ai_state = static_cast<AIState>((m_ai_state + 4 + (turnCorner.z ? -1 : 1)) % 4);
@@ -132,6 +134,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 					// find a valid location within 0.3 units of the parent
 					spawnPos = get_position() + glm::vec3((rand() % 10 - 5) / 17.0f, (rand() % 10 - 5) / 17.0f, 0.0f);
 					if (m_level->m_map->is_solid(spawnPos)) continue;
+					if (m_level->m_map->is_solid(spawnPos + get_velocity()*delta_time*0.4f)) continue;
 					break;
 				}
 				if (elite) {
@@ -142,6 +145,7 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 					childSlime = m_level->spawn<SlimeEntity>(m_level, SPLIT, floor(m_max_health / 2), m_ai_state);
 				}
 				childSlime->set_position(spawnPos);
+				childSlime->m_is_child = true;
 				childSlime->m_target_point_index = m_target_point_index;
 				m_level->m_slimes_alive++;
 			}
@@ -149,14 +153,14 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 		// basic death effects
 		Mix_PlayChannel(-1, m_level->m_global_info->killSfx, 0);
 		m_level->m_global_info->slimesKilled++;
-		m_level->m_money++;
+		if(!m_is_child or rand()%2) m_level->m_money++;
 		despawn();
 		return;
 	}
 
 	// health regeneration
 	if (m_slime_type != BASIC and m_slime_type != SPLIT and m_health < m_max_health) {
-		if (m_slime_type == BOSS) m_health += 0.03f;
+		if (m_slime_type == BOSS) m_health += 0.02f;
 		else m_health += 0.005f;
 	}
 
@@ -166,8 +170,8 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 	set_sprite_scale(glm::vec3(0.36f, 0.48f, 0.0f)* healthFactor);
 
 	// movment animation
-	set_sprite_height(get_sprite_height()* (1 + 0.08f * sin(m_squish_factor)));
-	m_squish_factor += 8.5f * delta_time;
+	set_sprite_height(get_sprite_height() * (1 + 0.08f * sin(m_squish_factor)));
+	m_squish_factor += 10.62f * get_speed() * delta_time;
 	if (m_squish_factor >= 360.0f) m_squish_factor -= 360.0f;
 
 	Entity::update(delta_time, collidable_entities, collidable_entity_count, map);

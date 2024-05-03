@@ -96,7 +96,7 @@ void Level::process_event(SDL_Event event) {
 		// process click triggers
 		if (m_held_item == NONE) {
 			if (Utility::touching_entity(m_global_info->mousePos, e_next_button, 0)) {
-				if (m_current_wave >= m_wave_count - 1) {
+				if (m_current_wave >= m_wave_count - 1 and m_slimes_alive == 0) {
 					// if the last wave is done, move to the next level
 					Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 					m_global_info->changeScenes = true;
@@ -124,7 +124,7 @@ void Level::process_event(SDL_Event event) {
 			if (check_placement_validity()) {
 				Mix_PlayChannel(-1, m_global_info->placeSfx, 0);
 				bool aoe = m_held_item == AOE_TURRET;
-				m_money -= m_turret_cost;
+				m_money -= m_turret_cost + aoe;
 				m_turret_cost = glm::min(++m_turret_cost, 9);
 				TurretEntity* newTurret = spawn<TurretEntity>(this,aoe);
 				newTurret->set_position(m_global_info->mousePos);
@@ -141,10 +141,11 @@ void Level::process_event(SDL_Event event) {
 		switch (event.key.keysym.sym) {
 		case SDLK_SPACE:
 			// next button hotkey
-			Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
-			if (m_current_wave == m_wave_count - 1) {
+			if (m_current_wave >= m_wave_count - 1 and m_slimes_alive == 0) {
+				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 				m_global_info->changeScenes = true;
-			} else if (m_current_wave < 0 or m_waves[m_current_wave].slimes_left() == 0) {
+			} else if (m_current_wave < 0 or m_slimes_alive == 0) {
+				Mix_PlayChannel(-1, m_global_info->clickSfx, 0);
 				e_next_button->m_animation_index = 2;
 				m_current_wave++;
 			}
@@ -163,7 +164,13 @@ void Level::process_event(SDL_Event event) {
 			for (int i = 0; i < m_entity_cap; i++) {
 				Entity* entity = m_entities[i];
 				if (!entity) continue;
-				if (typeid(*entity) == typeid(SlimeEntity)) entity->despawn();
+				if (typeid(*entity) == typeid(SlimeEntity)) {
+					SlimeEntity* slime = static_cast<SlimeEntity*>(entity);
+					if (slime->get_slime_type() == 2) m_money += 3;
+					else if (slime->get_slime_type() == 3) m_money += 4;
+					else m_money += 1;
+					slime->despawn();
+				}
 			}
 			e_next_button->m_animation_index = 2;
 			m_current_wave++;
@@ -206,6 +213,7 @@ void Level::update(float delta_time) {
 
 	// next-wave button activation
 	if (m_slimes_alive == 0 and !m_waves[m_current_wave].slimes_left() and e_next_button->m_animation_index == 2) {
+		m_global_info->wavesCleared++;
 		if (m_current_wave >= m_wave_count - 1) e_next_button->m_animation_index = 1;
 		else e_next_button->m_animation_index = 0;
 	}
@@ -237,7 +245,7 @@ void Level::update(float delta_time) {
 		SlimeWave& wave = m_waves[m_current_wave];
 		if (wave.slimes_left() > 0 and spawnDensity < wave.density) {
 			// pick a spawn location and make sure it's not overlapping any existing slimes
-			glm::vec3 offset = glm::vec3((rand() % 80 - 40) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
+			glm::vec3 offset = glm::vec3((rand() % 70 - 35) / 100.0f, (rand() % 70 - 35) / 100.0f, 0.0f);
 			bool overlap = false;
 			for (Entity* slime : slimes) {
 				if (glm::distance(m_spawn_point + offset, slime->get_position()) <= 0.4f) overlap = true;

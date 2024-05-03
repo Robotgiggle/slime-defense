@@ -77,9 +77,9 @@ void EndScreen::render(ShaderProgram* program) {
     Scene::render(program);
 
     int kills = m_global_info->slimesKilled;
-    int hurts = m_global_info->livesLost;
+    int waves = m_global_info->wavesCleared;
     std::string killsDisplay = ((kills < 10)? "00" : (kills < 100)? "0" : "") + std::to_string(kills);
-    std::string hurtsDisplay = ((hurts < 10)? "0" : "") + std::to_string(hurts);
+    std::string wavesDisplay = ((waves < 10)? "0" : "") + std::to_string(waves);
 
     if (m_global_info->playerDied) {
         Utility::draw_text(program, m_font_texture_id, "YOU DIED!", 0.9f, 0.0f, glm::vec3(0.58f, 5.2f, 0.0f));
@@ -87,6 +87,6 @@ void EndScreen::render(ShaderProgram* program) {
         Utility::draw_text(program, m_font_texture_id, "YOU WIN!", 1.0f, 0.0f, glm::vec3(0.7f, 5.2f, 0.0f));
     }
     Utility::draw_text(program, m_font_texture_id, "SLIMES KILLED:"+killsDisplay, 0.4f, 0.0f, glm::vec3(0.8f, 3.5f, 0.0f));
-    Utility::draw_text(program, m_font_texture_id, "LIVES LOST:"+hurtsDisplay, 0.45f, 0.0f, glm::vec3(1.3f, 2.3f, 0.0f));
+    Utility::draw_text(program, m_font_texture_id, "WAVES CLEARED:"+wavesDisplay, 0.4f, 0.0f, glm::vec3(1.0f, 2.2f, 0.0f));
     Utility::draw_text(program, m_font_texture_id, "EXIT", 0.42f, 0.0f, glm::vec3(3.38f, 0.5f, 0.0f));
 }

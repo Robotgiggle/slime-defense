@@ -50,12 +50,13 @@ void Level2::initialise() {
     m_turn_point_count = 3;
 
     // ————— WAVES ————— //
-    m_waves[0] = SlimeWave{ 1, 6, 0, 0, 0, 0 };
-    m_waves[1] = SlimeWave{ 1, 7, 2, 2, 0, 0 };
-    m_waves[2] = SlimeWave{ 2, 6, 3, 3, 0, 0 };
-    m_waves[3] = SlimeWave{ 2, 6, 3, 2, 2, 0 };
-    m_waves[4] = SlimeWave{ 3,12, 0, 0, 0, 1 };
-    m_wave_count = 5;
+    m_waves[0] = SlimeWave{ 1, 5, 1, 0, 0, 0 };
+    m_waves[1] = SlimeWave{ 1, 6, 2, 2, 0, 0 };
+    m_waves[2] = SlimeWave{ 1, 7, 3, 3, 0, 0 };
+    m_waves[3] = SlimeWave{ 2, 8, 3, 2, 2, 0 };
+    m_waves[4] = SlimeWave{ 2, 6, 4, 3, 3, 0 };
+    m_waves[5] = SlimeWave{ 3,12, 2, 0, 2, 1 };
+    m_wave_count = 6;
 
     // ————— PATH END ————— //
     e_path_end = new Entity(this);
