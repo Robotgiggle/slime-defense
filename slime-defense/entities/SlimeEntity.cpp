@@ -149,7 +149,6 @@ void SlimeEntity::update(float delta_time, Entity* collidable_entities, int coll
 				childSlime->set_position(spawnPos);
 				childSlime->m_is_child = true;
 				childSlime->m_target_point_index = m_target_point_index;
-				m_level->m_slimes_alive++;
 			}
 		}
 		// basic death effects
